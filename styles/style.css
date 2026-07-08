@@ -1,0 +1,263 @@
+:root {
+    --bg-main: #ffffff;
+    --bg-body: #f4f7fa;
+    --azul-primario: #2563eb;
+    --azul-hover: #1d4ed8;
+    --azul-tenue: #eff6ff;
+    --azul-borde: #bfdbfe;
+    --texto-principal: #1e293b;
+    --texto-secundario: #64748b;
+    --shadow-sm: 0 2px 4px rgba(37, 99, 235, 0.04);
+    --shadow-md: 0 10px 25px -5px rgba(30, 41, 59, 0.05);
+    --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background-color: var(--bg-body);
+    color: var(--texto-principal);
+    margin: 0;
+    padding: 0;
+    line-height: 1.5;
+}
+
+header {
+    background-color: var(--bg-main);
+    padding: 18px 20px;
+    text-align: center;
+    border-bottom: 1px solid #e2e8f0;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--azul-primario);
+    text-transform: uppercase;
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    font-size: 12px;
+    color: var(--texto-secundario);
+    border-top: 1px solid #e2e8f0;
+    background-color: var(--bg-main);
+    margin-top: 40px;
+}
+
+main {
+    max-width: 580px;
+    margin: 50px auto;
+    padding: 40px;
+    background: var(--bg-main);
+    border-radius: 16px;
+    box-shadow: var(--shadow-md);
+    border: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+h1 {
+    color: var(--texto-principal);
+    font-size: 26px;
+    font-weight: 800;
+    margin-bottom: 6px;
+    text-align: center;
+}
+
+h3 {
+    color: var(--texto-secundario);
+    font-size: 15px;
+    font-weight: 400;
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 30px;
+}
+
+.form-container {
+    background-color: var(--bg-main);
+    border-radius: 12px;
+    margin-top: 20px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    font-weight: 600;
+    color: var(--texto-principal);
+    font-size: 13.5px;
+    margin-bottom: 8px;
+}
+
+input[type="number"], select {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    box-sizing: border-box;
+    font-size: 15px;
+    background-color: var(--bg-main);
+    color: var(--texto-principal);
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+}
+
+input[type="number"]:focus, select:focus {
+    outline: none;
+    border-color: var(--azul-primario);
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+}
+
+.radio-group {
+    display: flex;
+    gap: 15px;
+    background: var(--azul-tenue);
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid var(--azul-borde);
+    margin-bottom: 25px;
+    justify-content: center;
+}
+
+.radio-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    font-size: 14.5px;
+}
+
+.radio-option input[type="radio"] {
+    accent-color: var(--azul-primario);
+    width: 16px;
+    height: 16px;
+}
+
+button {
+    width: 100%;
+    background-color: var(--azul-primario);
+    color: #ffffff;
+    border: none;
+    padding: 14px;
+    margin-top: 15px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+    transition: var(--transition);
+}
+
+button:hover {
+    background-color: var(--azul-hover);
+    transform: translateY(-1px);
+}
+
+.btn-nav {
+    background-color: transparent;
+    color: var(--azul-primario);
+    border: 1px solid var(--azul-borde);
+    margin-top: 15px;
+    box-shadow: none;
+}
+
+.btn-nav:hover {
+    background-color: var(--azul-tenue);
+    border-color: var(--azul-primario);
+}
+
+main a {
+    text-decoration: none;
+    display: block;
+}
+
+#resultado {
+    margin-top: 30px;
+    padding: 20px;
+    background-color: #f0fdf4;
+    border-left: 5px solid #16a34a;
+    border-radius: 8px;
+    color: #14532d;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 700;
+    display: none;
+    animation: fadeIn 0.3s ease-out;
+}
+
+#resultado span {
+    display: block;
+    font-size: 22px;
+    margin-top: 5px;
+}
+
+.val-positivo {
+    color: #16a34a !important;
+}
+
+.val-negativo {
+    color: #dc2626 !important;
+}
+
+.error-msg {
+    background-color: #fef2f2 !important;
+    border-left: 5px solid #dc2626 !important;
+    color: #991b1b !important;
+}
+
+.hidden {
+    display: none !important;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 640px) {
+    main {
+        margin: 20px 15px; 
+        padding: 25px 20px;
+        border-radius: 12px;
+    }
+
+    h1 {
+        font-size: 22px;
+    }
+
+    h3 {
+        font-size: 13.5px;
+        margin-bottom: 20px;
+    }
+
+    header {
+        padding: 15px;
+        font-size: 12px;
+    }
+
+    .radio-group {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 15px;
+    }
+
+    input[type="number"], select {
+        padding: 10px 14px;
+        font-size: 16px;
+    }
+
+    button {
+        padding: 12px;
+        font-size: 14px;
+    }
+
+    #resultado {
+        padding: 15px;
+        font-size: 15px;
+    }
+
+    #resultado span {
+        font-size: 20px;
+    }
+}

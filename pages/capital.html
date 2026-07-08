@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles/style.css"/>
+    <title>Calculadora Financiera</title>
+</head>
+<body>
+    <header>
+
+    </header>
+
+    <main> 
+        <h1>Cálculo de Capital y Rendimiento</h1>
+
+        <div class="form-group">
+            <label for="tipoCalculo">¿Qué desea calcular?</label>
+            <select id="tipoCalculo" onchange="configurarFormulario()">
+                <option value="">-- Seleccione una opción --</option>
+                
+                <optgroup label="Capital y Rendimiento">
+                    <option value="tmar">Tasa Mínima Aceptable de Rendimiento (TMAR)</option>
+                    <option value="tmar_i">Premio al Riesgo (i) [Despeje de TMAR]</option>
+                    <option value="tmar_f">Tasa de Inflación (f) [Despeje de TMAR]</option>
+                    <option value="co">Costo de Oportunidad</option>
+                    <option value="co_roa">Retorno de Opción Alternativa [Despeje CO]</option>
+                    <option value="co_roe">Retorno de Opción Elegida [Despeje CO]</option>
+                    <option value="ccpp">Costo del Capital Promedio Ponderado (CCPP / WACC)</option>
+                </optgroup>
+
+                <optgroup label="Conversiones y Frecuencias">
+                    <option value="ie_discreta">Tasa Efectiva Anual (i) [Capitalización Discreta]</option>
+                    <option value="r_discreta">Tasa Nominal Anual (r) [Capitalización Discreta]</option>
+                    <option value="ie_continua">Tasa Efectiva Continua (ie)</option>
+                    <option value="r_continua">Tasa Nominal Continua (r)</option>
+                </optgroup>
+            </select>
+        </div>
+
+        <div id="formularioCampos" class="hidden form-container">
+            <div id="grupo_ie" class="form-group hidden">
+                <label for="tasaEfectiva">Tasa Efectiva Anual (en decimal, ej: 0.12)</label>
+                <input type="number" step="0.0001" id="tasaEfectiva">
+            </div>
+            <div id="grupo_r" class="form-group hidden">
+                <label for="tasaNominal">Tasa Nominal Anual (en decimal, ej: 0.10)</label>
+                <input type="number" step="0.0001" id="tasaNominal">
+            </div>
+            <div id="grupo_m" class="form-group hidden">
+                <label for="frecuencia">Frecuencia de Capitalización (m periodos al año)</label>
+                <select id="frecuencia">
+                    <option value="12">Mensual (m = 12)</option>
+                    <option value="6">Bimestral (m = 6)</option>
+                    <option value="4">Trimestral (m = 4)</option>
+                    <option value="2">Semestral (m = 2)</option>
+                    <option value="1">Anual (m = 1)</option>
+                    <option value="365">Diaria (m = 365)</option>
+                </select>
+            </div>
+
+            <div id="grupo_tmar_val" class="form-group hidden">
+                <label for="valTmar">TMAR Global (en decimal, ej: 0.15)</label>
+                <input type="number" step="0.0001" id="valTmar">
+            </div>
+            <div id="grupo_inflacion" class="form-group hidden">
+                <label for="valInflacion">Tasa de Inflación (f) (en decimal)</label>
+                <input type="number" step="0.0001" id="valInflacion">
+            </div>
+            <div id="grupo_premio" class="form-group hidden">
+                <label for="valPremio">Premio al Riesgo (i) (en decimal)</label>
+                <input type="number" step="0.0001" id="valPremio">
+            </div>
+
+            <div id="grupo_co_val" class="form-group hidden">
+                <label for="valCO">Costo de Oportunidad Perdido</label>
+                <input type="number" step="0.01" id="valCO">
+            </div>
+            <div id="grupo_roa" class="form-group hidden">
+                <label for="valROA">Retorno de la Opción Alternativa</label>
+                <input type="number" step="0.01" id="valROA">
+            </div>
+            <div id="grupo_roe" class="form-group hidden">
+                <label for="valROE">Retorno de la Opción Elegida</label>
+                <input type="number" step="0.01" id="valROE">
+            </div>
+
+            <div id="grupo_wd" class="form-group hidden">
+                <label for="valWd">Porcentaje de Financiación por Deuda (Wd) (0 a 1)</label>
+                <input type="number" step="0.01" id="valWd" min="0" max="1">
+            </div>
+            <div id="grupo_kd" class="form-group hidden">
+                <label for="valKd">Costo de la Deuda (Kd) (decimal, ej: 0.08)</label>
+                <input type="number" step="0.0001" id="valKd" min="0">
+            </div>
+            <div id="grupo_ke" class="form-group hidden">
+                <label for="valKe">Costo del Capital Propio (Ke) (decimal, ej: 0.12)</label>
+                <input type="number" step="0.0001" id="valKe" min="0">
+            </div>
+
+            <button onclick="calcularCapital()">Ejecutar Cálculo</button>
+        </div>
+
+        <div id="resultado"></div>
+        <a href="index.html"><button class="btn-nav">← Volver al Menú Principal</button></a>
+    </main>
+
+    <footer>
+
+    </footer>
+    
+    <script src='../scripts/capital.js'></script>
+</body>
+</html>
