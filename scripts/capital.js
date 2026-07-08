@@ -1,22 +1,26 @@
+let monedaActual = '$';
+
+document.addEventListener("DOMContentLoaded", () => {
+    monedaActual = localStorage.getItem('moneda') || '$';
+
+    const sufijo = ` [${monedaActual.trim()}]`;
+    document.querySelector('label[for="valCO"]').textContent = `Costo de Oportunidad Perdido${sufijo}`;
+    document.querySelector('label[for="valROA"]').textContent = `Retorno de la Opción Alternativa${sufijo}`;
+    document.querySelector('label[for="valROE"]').textContent = `Retorno de la Opción Elegida${sufijo}`;
+});
+
 function configurarFormulario() {
     const tipo = document.getElementById("tipoCalculo").value;
     const formCampos = document.getElementById("formularioCampos");
     
     ocultarResultado();
-
     if (!tipo) {
         formCampos.classList.add("hidden");
         return;
     }
     
     formCampos.classList.remove("hidden");
-    
-    const grupos = [
-        "grupo_ie", "grupo_r", "grupo_m", 
-        "grupo_tmar_val", "grupo_inflacion", "grupo_premio",
-        "grupo_co_val", "grupo_roa", "grupo_roe",
-        "grupo_wd", "grupo_kd", "grupo_ke"
-    ];
+    const grupos = ["grupo_ie", "grupo_r", "grupo_m", "grupo_tmar_val", "grupo_inflacion", "grupo_premio", "grupo_co_val", "grupo_roa", "grupo_roe", "grupo_wd", "grupo_kd", "grupo_ke"];
     grupos.forEach(id => document.getElementById(id).classList.add("hidden"));
 
     if (tipo === "ie_discreta" || tipo === "r_discreta") {
@@ -30,8 +34,8 @@ function configurarFormulario() {
         if (tipo !== "tmar_i") document.getElementById("grupo_premio").classList.remove("hidden");
     } else if (tipo.startsWith("co")) {
         if (tipo !== "co") document.getElementById("grupo_co_val").classList.remove("hidden");
-        if (tipo !== "co_roe") document.getElementById("grupo_roa").classList.remove("hidden");
-        if (tipo !== "co_roa") document.getElementById("grupo_roe").classList.remove("hidden");
+        if (tipo !== "co_roa") document.getElementById("grupo_roa").classList.remove("hidden");
+        if (tipo !== "co_roe") document.getElementById("grupo_roe").classList.remove("hidden");
     } else if (tipo === "ccpp") {
         document.getElementById("grupo_wd").classList.remove("hidden");
         document.getElementById("grupo_kd").classList.remove("hidden");
@@ -105,17 +109,17 @@ function calcularCapital() {
                 if (isNaN(roa) || isNaN(roe)) throw "Faltan datos obligatorios.";
                 output = roa - roe;
                 color = output < 0 ? "val-negativo" : "val-positivo";
-                texto = `Costo de Oportunidad: <span class="${color}">${output.toFixed(4)}</span>`;
+                texto = `Costo de Oportunidad: <span class="${color}">${monedaActual}${output.toFixed(2)}</span>`;
             } else if (tipo === "co_roa") {
                 if (isNaN(co) || isNaN(roe)) throw "Faltan datos obligatorios.";
                 output = co + roe;
                 color = output < 0 ? "val-negativo" : "val-positivo";
-                texto = `Retorno Alternativa: <span class="${color}">${output.toFixed(4)}</span>`;
+                texto = `Retorno Alternativa: <span class="${color}">${monedaActual}${output.toFixed(2)}</span>`;
             } else if (tipo === "co_roe") {
                 if (isNaN(co) || isNaN(roa)) throw "Faltan datos obligatorios.";
                 output = roa - co;
                 color = output < 0 ? "val-negativo" : "val-positivo";
-                texto = `Retorno Elegida: <span class="${color}">${output.toFixed(4)}</span>`;
+                texto = `Retorno Elegida: <span class="${color}">${monedaActual}${output.toFixed(2)}</span>`;
             }
         }
         else if (tipo === "ccpp") {

@@ -1,3 +1,19 @@
+let monedaActual = '$';
+
+document.addEventListener("DOMContentLoaded", () => {
+    monedaActual = localStorage.getItem('moneda') || '$';
+    
+    // Actualizar dinámicamente las etiquetas que representan dinero
+    const sufijo = ` [${monedaActual.trim()}]`;
+    document.querySelector('label[for="costoTotal"]').textContent = `Costo Total (CT)${sufijo}`;
+    document.querySelector('label[for="costoFijo"]').textContent = `Costo Fijo (CF)${sufijo}`;
+    document.querySelector('label[for="costoVariableUnitario"]').textContent = `Costo Variable Unitario (v)${sufijo}`;
+    document.querySelector('label[for="precioUnitario"]').textContent = `Precio Unitario de Venta (P)${sufijo}`;
+    document.querySelector('label[for="ingresoTotal"]').textContent = `Ingreso Total (IT)${sufijo}`;
+    document.querySelector('label[for="utilidad"]').textContent = `Beneficio Real / Utilidad (U)${sufijo}`;
+    document.querySelector('label[for="costoUnitario"]').textContent = `Costo Unitario Total (Cu)${sufijo}`;
+});
+
 const opcionesVariables = {
     costo_total: [
         { value: "CT", text: "Costo Total (CT)" },
@@ -69,11 +85,9 @@ function configurarFormulario() {
     }
     formCampos.classList.remove("hidden");
     
-    // Ocultar todos los grupos inicialmente
     const grupos = ["grupo_CT", "grupo_CF", "grupo_v", "grupo_Q", "grupo_P", "grupo_IT", "grupo_U", "grupo_Cu", "grupo_margen", "grupo_Qmax", "grupo_utilizacion", "grupo_modo_cocomo", "grupo_KLOC", "grupo_Esfuerzo"];
     grupos.forEach(id => document.getElementById(id).classList.add("hidden"));
     
-    // Mostrar dinámicamente según el modelo
     if (modelo === "costo_total") {
         if (objetivo !== "CT") document.getElementById("grupo_CT").classList.remove("hidden");
         if (objetivo !== "CF") document.getElementById("grupo_CF").classList.remove("hidden");
@@ -108,7 +122,6 @@ function ejecutarCalculo() {
     const objetivo = document.getElementById("variableObjetivo").value;
     const resDiv = document.getElementById("resultado");
     
-    // Captura de datos
     const CT = parseFloat(document.getElementById("costoTotal").value);
     const CF = parseFloat(document.getElementById("costoFijo").value);
     const v = parseFloat(document.getElementById("costoVariableUnitario").value);
@@ -131,7 +144,6 @@ function ejecutarCalculo() {
     let color = "";
 
     try {
-        // Validar que las variables físicas no sean negativas (excepto la Utilidad/Beneficio)
         const inputsFisicos = [CT, CF, v, Q, P, IT, Cu, Qmax, util, KLOC, E];
         if (inputsFisicos.some(val => val < 0)) throw "Error lógico: Esta variable no admite valores negativos.";
 
@@ -140,21 +152,21 @@ function ejecutarCalculo() {
                 if (isNaN(CF) || isNaN(v) || isNaN(Q)) throw "Faltan variables.";
                 resultadoFinal = CF + (v * Q);
                 color = "val-positivo";
-                textoResultado = `Costo Total (CT): <span class="${color}">${resultadoFinal.toFixed(2)}</span>`;
+                textoResultado = `Costo Total (CT): <span class="${color}">${monedaActual}${resultadoFinal.toFixed(2)}</span>`;
             } else if (objetivo === "CF") {
                 if (isNaN(CT) || isNaN(v) || isNaN(Q)) throw "Faltan variables.";
                 resultadoFinal = CT - (v * Q);
                 if (resultadoFinal < 0) throw "Resultado inválido: El Costo Fijo resultante es negativo.";
                 color = "val-positivo";
-                textoResultado = `Costo Fijo (CF): <span class="${color}">${resultadoFinal.toFixed(2)}</span>`;
+                textoResultado = `Costo Fijo (CF): <span class="${color}">${monedaActual}${resultadoFinal.toFixed(2)}</span>`;
             } else if (objetivo === "v") {
-                if (isNaN(CT) || isNaN(CF) || isNaN(Q) || Q === 0) throw "División por cero (Q=0) o datos faltantes.";
+                if (isNaN(CT) || isNaN(CF) || isNaN(Q) || Q === 0) throw "División por cero o datos faltantes.";
                 resultadoFinal = (CT - CF) / Q;
                 if (resultadoFinal < 0) throw "Resultado inválido: El Costo Variable es negativo.";
                 color = "val-positivo";
-                textoResultado = `Costo Variable Unitario (v): <span class="${color}">${resultadoFinal.toFixed(4)}</span>`;
+                textoResultado = `Costo Variable Unitario (v): <span class="${color}">${monedaActual}${resultadoFinal.toFixed(4)}</span>`;
             } else if (objetivo === "Q") {
-                if (isNaN(CT) || isNaN(CF) || isNaN(v) || v === 0) throw "División por cero (v=0) o datos faltantes.";
+                if (isNaN(CT) || isNaN(CF) || isNaN(v) || v === 0) throw "División por cero o datos faltantes.";
                 resultadoFinal = (CT - CF) / v;
                 if (resultadoFinal < 0) throw "Resultado inválido: La cantidad es negativa.";
                 color = "val-positivo";
@@ -165,7 +177,7 @@ function ejecutarCalculo() {
         else if (modelo === "punto_equilibrio") {
             if (objetivo === "Qeq") {
                 if (isNaN(CF) || isNaN(P) || isNaN(v)) throw "Faltan variables.";
-                if ((P - v) <= 0) throw "El margen de contribución (P - v) debe ser mayor a 0 para que exista equilibrio.";
+                if ((P - v) <= 0) throw "El margen de contribución debe ser mayor a 0 para el equilibrio.";
                 resultadoFinal = CF / (P - v);
                 color = "val-positivo";
                 textoResultado = `Punto de Equilibrio (Qeq): <span class="${color}">${resultadoFinal.toFixed(2)} unid.</span>`;
@@ -173,17 +185,17 @@ function ejecutarCalculo() {
                 if (isNaN(Q) || isNaN(P) || isNaN(v)) throw "Faltan variables.";
                 resultadoFinal = Q * (P - v);
                 color = resultadoFinal < 0 ? "val-negativo" : "val-positivo";
-                textoResultado = `Costo Fijo Soportado (CF): <span class="${color}">${resultadoFinal.toFixed(2)}</span>`;
+                textoResultado = `Costo Fijo Soportado (CF): <span class="${color}">${monedaActual}${resultadoFinal.toFixed(2)}</span>`;
             } else if (objetivo === "P") {
                 if (isNaN(CF) || isNaN(Q) || isNaN(v) || Q === 0) throw "Faltan variables.";
                 resultadoFinal = (CF / Q) + v;
                 color = "val-positivo";
-                textoResultado = `Precio Mínimo de Venta (P): <span class="${color}">$${resultadoFinal.toFixed(2)}</span>`;
+                textoResultado = `Precio Mínimo de Venta (P): <span class="${color}">${monedaActual}${resultadoFinal.toFixed(2)}</span>`;
             } else if (objetivo === "v") {
                 if (isNaN(CF) || isNaN(Q) || isNaN(P) || Q === 0) throw "Faltan variables.";
                 resultadoFinal = P - (CF / Q);
                 color = resultadoFinal < 0 ? "val-negativo" : "val-positivo";
-                textoResultado = `Costo Variable Límite (v): <span class="${color}">$${resultadoFinal.toFixed(2)}</span>`;
+                textoResultado = `Costo Variable Límite (v): <span class="${color}">${monedaActual}${resultadoFinal.toFixed(2)}</span>`;
             }
         }
 
@@ -191,20 +203,20 @@ function ejecutarCalculo() {
             if (objetivo === "U") {
                 if (isNaN(IT) || isNaN(CT)) throw "Faltan variables.";
                 resultadoFinal = IT - CT;
-                color = resultadoFinal < 0 ? "val-negativo" : "val-positivo"; // Pérdida en rojo, Ganancia en verde
-                textoResultado = `Margen de Beneficio Real (U): <span class="${color}">$${resultadoFinal.toFixed(2)}</span>`;
+                color = resultadoFinal < 0 ? "val-negativo" : "val-positivo";
+                textoResultado = `Margen de Beneficio Real (U): <span class="${color}">${monedaActual}${resultadoFinal.toFixed(2)}</span>`;
             } else if (objetivo === "IT") {
                 if (isNaN(U) || isNaN(CT)) throw "Faltan variables.";
                 resultadoFinal = U + CT;
                 if (resultadoFinal < 0) throw "Ingreso total no puede ser negativo.";
                 color = "val-positivo";
-                textoResultado = `Ingreso Total Requerido (IT): <span class="${color}">$${resultadoFinal.toFixed(2)}</span>`;
+                textoResultado = `Ingreso Total Requerido (IT): <span class="${color}">${monedaActual}${resultadoFinal.toFixed(2)}</span>`;
             } else if (objetivo === "CT") {
                 if (isNaN(IT) || isNaN(U)) throw "Faltan variables.";
                 resultadoFinal = IT - U;
                 if (resultadoFinal < 0) throw "El Costo Total no puede ser negativo.";
                 color = "val-positivo";
-                textoResultado = `Costo Total Límite (CT): <span class="${color}">$${resultadoFinal.toFixed(2)}</span>`;
+                textoResultado = `Costo Total Límite (CT): <span class="${color}">${monedaActual}${resultadoFinal.toFixed(2)}</span>`;
             }
         }
 
@@ -213,16 +225,16 @@ function ejecutarCalculo() {
                 if (isNaN(Cu) || isNaN(margen)) throw "Faltan variables.";
                 resultadoFinal = Cu * (1 + margen);
                 color = resultadoFinal < 0 ? "val-negativo" : "val-positivo";
-                textoResultado = `Precio Formulado (P): <span class="${color}">$${resultadoFinal.toFixed(2)}</span>`;
+                textoResultado = `Precio Formulado (P): <span class="${color}">${monedaActual}${resultadoFinal.toFixed(2)}</span>`;
             } else if (objetivo === "Cu") {
                 if (isNaN(P) || isNaN(margen)) throw "Faltan variables.";
                 resultadoFinal = P / (1 + margen);
                 color = resultadoFinal < 0 ? "val-negativo" : "val-positivo";
-                textoResultado = `Costo Unitario (Cu): <span class="${color}">$${resultadoFinal.toFixed(2)}</span>`;
+                textoResultado = `Costo Unitario (Cu): <span class="${color}">${monedaActual}${resultadoFinal.toFixed(2)}</span>`;
             } else if (objetivo === "margen") {
-                if (isNaN(P) || isNaN(Cu) || Cu === 0) throw "Faltan variables o Costo Unitario es 0.";
+                if (isNaN(P) || isNaN(Cu) || Cu === 0) throw "Faltan variables.";
                 resultadoFinal = (P - Cu) / Cu;
-                color = resultadoFinal < 0 ? "val-negativo" : "val-positivo"; // Margen negativo en rojo
+                color = resultadoFinal < 0 ? "val-negativo" : "val-positivo"; 
                 textoResultado = `Margen de Beneficio Nominal: <span class="${color}">${(resultadoFinal * 100).toFixed(2)}%</span>`;
             }
         }
