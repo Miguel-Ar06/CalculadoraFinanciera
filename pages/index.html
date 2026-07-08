@@ -14,6 +14,18 @@
     <main> 
         <h1>Calculadora Financiera</h1>
         <h3>¿Qué desea calcular?</h3>
+
+        <div class="form-group">
+            <label>Moneda de Trabajo:</label>
+            <div class="radio-group">
+                <label class="radio-option">
+                    <input type="radio" name="monedaGlobal" value="$" onchange="guardarMoneda()"> USD ($)
+                </label>
+                <label class="radio-option">
+                    <input type="radio" name="monedaGlobal" value="Bs. " onchange="guardarMoneda()"> Bolívares (Bs.)
+                </label>
+            </div>
+        </div>
         
         <a href="interes.html"><button type="button">Interés</button></a>
         <a href="anualidades.html"><button type="button">Anualidades (En construcción)</button></a>
@@ -24,5 +36,23 @@
     <footer>
 
     </footer>
+
+    <script>
+        function guardarMoneda() {
+            const seleccion = document.querySelector('input[name="monedaGlobal"]:checked').value;
+            localStorage.setItem('moneda', seleccion);
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const monedaGuardada = localStorage.getItem('moneda') || '$';
+            const radio = document.querySelector(`input[value="${monedaGuardada}"]`);
+            if (radio) {
+                radio.checked = true;
+            } else {
+                document.querySelector('input[value="$"]').checked = true;
+                localStorage.setItem('moneda', '$');
+            }
+        });
+    </script>
 </body>
 </html>
