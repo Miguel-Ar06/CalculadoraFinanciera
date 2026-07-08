@@ -31,8 +31,7 @@ function configurarFormulario() {
 
         if (i <= num) {
             block.classList.remove("hidden");
-            
-            // Si las vidas son iguales, la alternativa 1 manda sobre las demás
+
             if (modulo === "iguales") {
                 if (i > 1) {
                     inputVida.disabled = true;
@@ -65,10 +64,6 @@ function sincronizarVidasDinamicas() {
     }
 }
 
-// ==========================================
-//          ALGORITMOS MATEMÁTICOS
-// ==========================================
-
 function calcularMCD(a, b) {
     return b === 0 ? a : calcularMCD(b, a % b);
 }
@@ -80,12 +75,12 @@ function calcularMCM(a, b) {
 
 function calcularVPNBase(P, A, S, i, N, horizonteMax = N) {
     let vpnTotal = 0;
-    // Ciclos de reinversión de activos fijos según horizonte unificado (MCM)
+
     for (let t = 0; t < horizonteMax; t += N) {
         vpnTotal -= P / Math.pow(1 + i, t);
         vpnTotal += S / Math.pow(1 + i, t + N);
     }
-    // Flujos de efectivo operativos anuales continuos
+
     for (let t = 1; t <= horizonteMax; t++) {
         vpnTotal += A / Math.pow(1 + i, t);
     }
@@ -97,7 +92,6 @@ function calcularVABase(vpn, i, N) {
     return vpn * ((i * Math.pow(1 + i, N)) / (Math.pow(1 + i, N) - 1));
 }
 
-// Newton-Raphson robusto para flujos incrementales continuos de un periodo único
 function calcularTIRIncrementalSemejante(deltaP, deltaA, deltaS, N) {
     let i = 0.12; 
     const maxIter = 100;
@@ -122,9 +116,6 @@ function calcularTIRIncrementalSemejante(deltaP, deltaA, deltaS, N) {
     return i;
 }
 
-// ==========================================
-//        PROCESAMIENTO MULTI-PROYECTO
-// ==========================================
 
 function procesarAlternativas() {
     const modulo = document.getElementById("tipoModulo").value;
@@ -136,7 +127,6 @@ function procesarAlternativas() {
         if (isNaN(tmarInput)) throw "Defina la tasa de rendimiento global (TMAR / TREMA).";
         const i = tmarInput / 100;
 
-        // Recolección y mapeo estructurado de datos dinámicos
         let alternativas = [];
         for (let k = 1; k <= num; k++) {
             const P = parseFloat(document.getElementById(`inversion_${k}`).value);
@@ -157,13 +147,11 @@ function procesarAlternativas() {
         let HTML_Response = "";
 
         if (modulo === "iguales") {
-            // MÓDULO 1: VIDAS ÚTILES IGUALES
-            // Calcular métricas base individuales
+
             alternativas.forEach(alt => {
                 alt.vpn = calcularVPNBase(alt.P, alt.A, alt.S, i, alt.N);
             });
 
-            // Ordenar por Inversión Inicial Ascendente (Requisito Ingeniería Económica)
             alternativas.sort((a, b) => a.P - b.P);
 
             let txtAnalisis = "<strong>Cadena de Análisis Incremental Consecutivo:</strong><br>";
@@ -200,22 +188,19 @@ function procesarAlternativas() {
             `;
 
         } else {
-            // MÓDULO 2: VIDAS ÚTILES DIFERENTES
-            // Calcular el MCM general del arreglo de periodos activo
+
             let vidasActivas = alternativas.map(a => a.N);
             let mcmGeneral = vidasActivas[0];
             for(let x = 1; x < vidasActivas.length; x++) {
                 mcmGeneral = calcularMCM(mcmGeneral, vidasActivas[x]);
             }
 
-            // Calcular Métricas Extendidas
             alternativas.forEach(alt => {
                 alt.vpnIndividual = calcularVPNBase(alt.P, alt.A, alt.S, i, alt.N, alt.N);
                 alt.va = calcularVABase(alt.vpnIndividual, i, alt.N);
                 alt.vpnMCM = calcularVPNBase(alt.P, alt.A, alt.S, i, alt.N, mcmGeneral);
             });
 
-            // Análisis Incremental basado en Valor Anual (Ordenar por Inversión Inicial)
             alternativas.sort((a, b) => a.P - b.P);
             let txtAnalisisVA = "<strong>Cadena de Análisis Incremental por Valor Anual (VA):</strong><br>";
             let defensoraVA = alternativas[0];
@@ -271,7 +256,6 @@ function ocultarResultado() {
     document.getElementById("resultado").style.display = "none";
 }
 
-// Escucha activa global para limpiar respuestas obsoletas en cambios de formulario
 document.addEventListener("input", function(e) {
     if (e.target.tagName === "INPUT" || e.target.tagName === "SELECT") {
         if (!e.target.id.startsWith("vida_") && e.target.id !== "tipoModulo" && e.target.id !== "numAlternativas") {

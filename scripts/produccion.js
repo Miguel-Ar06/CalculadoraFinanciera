@@ -2,8 +2,7 @@ let monedaActual = '$';
 
 document.addEventListener("DOMContentLoaded", () => {
     monedaActual = localStorage.getItem('moneda') || '$';
-    
-    // Actualizar dinámicamente las etiquetas que representan dinero
+
     const sufijo = ` [${monedaActual.trim()}]`;
     document.querySelector('label[for="costoTotal"]').textContent = `Costo Total (CT)${sufijo}`;
     document.querySelector('label[for="costoFijo"]').textContent = `Costo Fijo (CF)${sufijo}`;

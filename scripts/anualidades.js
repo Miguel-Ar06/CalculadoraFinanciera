@@ -19,7 +19,6 @@ function configurarFormulario() {
     
     ocultarResultado();
 
-    // Habilitar la opción de período de gracia únicamente si es diferida
     const optGracia = document.getElementById("optGracia");
     if (tipo === "diferida") {
         optGracia.classList.remove("hidden");
@@ -31,7 +30,6 @@ function configurarFormulario() {
         }
     }
 
-    // Determinar visibilidad del selector de base financiera (P o F)
     const grupoBase = document.getElementById("grupo_base_calculo");
     const necesitaBase = ["cuota", "tasa", "periodos"].includes(objetivo);
     if (necesitaBase) {
@@ -40,11 +38,9 @@ function configurarFormulario() {
         grupoBase.classList.add("hidden");
     }
 
-    // Ocultar de entrada todos los bloques de inputs
     const grupos = ["grupo_tasa", "grupo_periodos", "grupo_anualidad", "grupo_presente", "grupo_futuro", "grupo_gracia"];
     grupos.forEach(id => document.getElementById(id).classList.add("hidden"));
 
-    // Mostrar inputs de forma condicional según la variable a despejar
     if (objetivo !== "tasa") document.getElementById("grupo_tasa").classList.remove("hidden");
     if (objetivo !== "periodos") document.getElementById("grupo_periodos").classList.remove("hidden");
     if (objetivo !== "cuota") document.getElementById("grupo_anualidad").classList.remove("hidden");
@@ -62,10 +58,6 @@ function configurarFormulario() {
         }
     }
 }
-
-// ==========================================
-//   LÓGICA DE CÁLCULO FINANCIERO (INTACTA)
-// ==========================================
 
 function calcularValorPresente(A, i, N, tipo, K = 0) { 
     if (i === 0) return A * N;
@@ -136,17 +128,12 @@ function calcularTasaNewtonRaphson(tipo, base, P, F, A, N, K) {
     return i; 
 }
 
-// ==========================================
-//          SISTEMA DE BINDING (UI)
-// ==========================================
-
 function calcularAnualidades() {
     const tipo = document.getElementById("tipoAnualidad").value;
     const objetivo = document.getElementById("variableCalcular").value;
     const base = document.getElementById("baseCalculo").value;
     const resDiv = document.getElementById("resultado");
 
-    // Extracción limpia validando contra la clase .hidden del contenedor correspondientes
     const i = !document.getElementById('grupo_tasa').classList.contains('hidden') ? parseFloat(document.getElementById('tasaInteres').value) / 100 : null;
     const N = !document.getElementById('grupo_periodos').classList.contains('hidden') ? parseInt(document.getElementById('periodos').value) : null;
     const A = !document.getElementById('grupo_anualidad').classList.contains('hidden') ? parseFloat(document.getElementById('anualidad').value) : null;
