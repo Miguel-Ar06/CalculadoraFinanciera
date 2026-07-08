@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles/style.css"/>
+    <title>Calculadora Financiera - Selección de Alternativas</title>
+</head>
+<body>
+    <header>
+        </header>
+
+    <main> 
+        <h1>Selección de Alternativas Mutuamente Excluyentes</h1>
+
+        <div class="form-group">
+            <label for="tipoModulo">Escenario de Vida Útil</label>
+            <select id="tipoModulo" onchange="configurarFormulario()">
+                <option value="iguales">Alternativas con Vidas Útiles Iguales (VPN / ΔVPN / ΔTIR)</option>
+                <option value="diferentes">Alternativas con Vidas Útiles Diferentes (VA / MCM / VPN-MCM)</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="numAlternativas">¿Cuántas alternativas desea evaluar?</label>
+            <select id="numAlternativas" onchange="configurarFormulario()">
+                <option value="2">2 Alternativas</option>
+                <option value="3">3 Alternativas</option>
+                <option value="4">4 Alternativas</option>
+                <option value="5">5 Alternativas</option>
+                <option value="6">6 Alternativas</option>
+                <option value="7">7 Alternativas</option>
+                <option value="8">8 Alternativas</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="tmar">Tasa Mínima Aceptable de Rendimiento - TMAR / TREMA (en %, ej: 12)</label>
+            <input type="number" step="any" id="tmar" placeholder="Ej: 12">
+        </div>
+
+        <div id="formularioCampos" class="form-container">
+            
+            <div id="block_alt_1" class="form-group">
+                <h2 style="border-bottom: 1px solid var(--azul-borde); padding-bottom: 5px;">Alternativa 1</h2>
+                <div id="grupo_inversion_1" class="form-group">
+                    <label for="inversion_1">Inversión Inicial (P₁)</label>
+                    <input type="number" step="0.01" id="inversion_1" placeholder="Ej: 50000">
+                </div>
+                <div id="grupo_flujo_1" class="form-group">
+                    <label for="flujo_1">Flujo Neto Anual (A₁)</label>
+                    <input type="number" step="0.01" id="flujo_1" placeholder="Ej: 15000">
+                </div>
+                <div id="grupo_vida_1" class="form-group">
+                    <label for="vida_1">Vida Útil (N₁)</label>
+                    <input type="number" step="1" id="vida_1" placeholder="Ej: 5">
+                </div>
+                <div class="form-group">
+                    <label for="tipoSalvamento_1">Tipo de Valor de Salvamento (1)</label>
+                    <select id="tipoSalvamento_1" onchange="alternarSalvamento(1)">
+                        <option value="fijo">Valor Fijo Neto</option>
+                        <option value="porcentaje">Porcentaje de la Inversión (%)</option>
+                    </select>
+                </div>
+                <div id="grupo_salvamento_1" class="form-group">
+                    <label id="lblSalvamento_1" for="salvamento_1">Valor de Salvamento Fijo (S₁)</label>
+                    <input type="number" step="0.01" id="salvamento_1" placeholder="Ej: 5000">
+                </div>
+            </div>
+
+            <div id="block_alt_2" class="form-group">
+                <h2 style="border-bottom: 1px solid var(--azul-borde); padding-bottom: 5px;">Alternativa 2</h2>
+                <div id="grupo_inversion_2" class="form-group">
+                    <label for="inversion_2">Inversión Inicial (P₂)</label>
+                    <input type="number" step="0.01" id="inversion_2" placeholder="Ej: 75000">
+                </div>
+                <div id="grupo_flujo_2" class="form-group">
+                    <label for="flujo_2">Flujo Neto Anual (A₂)</label>
+                    <input type="number" step="0.01" id="flujo_2" placeholder="Ej: 22000">
+                </div>
+                <div id="grupo_vida_2" class="form-group">
+                    <label for="vida_2">Vida Útil (N₂)</label>
+                    <input type="number" step="1" id="vida_2" placeholder="Ej: 5">
+                </div>
+                <div class="form-group">
+                    <label for="tipoSalvamento_2">Tipo de Valor de Salvamento (2)</label>
+                    <select id="tipoSalvamento_2" onchange="alternarSalvamento(2)">
+                        <option value="fijo">Valor Fijo Neto</option>
+                        <option value="porcentaje">Porcentaje de la Inversión (%)</option>
+                    </select>
+                </div>
+                <div id="grupo_salvamento_2" class="form-group">
+                    <label id="lblSalvamento_2" for="salvamento_2">Valor de Salvamento Fijo (S₂)</label>
+                    <input type="number" step="0.01" id="salvamento_2" placeholder="Ej: 8000">
+                </div>
+            </div>
+
+            <div id="block_alt_3" class="form-group hidden">
+                <h2 style="border-bottom: 1px solid var(--azul-borde); padding-bottom: 5px;">Alternativa 3</h2>
+                <div id="grupo_inversion_3" class="form-group">
+                    <label for="inversion_3">Inversión Inicial (P₃)</label>
+                    <input type="number" step="0.01" id="inversion_3">
+                </div>
+                <div id="grupo_flujo_3" class="form-group">
+                    <label for="flujo_3">Flujo Neto Anual (A₃)</label>
+                    <input type="number" step="0.01" id="flujo_3">
+                </div>
+                <div id="grupo_vida_3" class="form-group">
+                    <label for="vida_3">Vida Útil (N₃)</label>
+                    <input type="number" step="1" id="vida_3">
+                </div>
+                <div class="form-group">
+                    <label for="tipoSalvamento_3">Tipo de Valor de Salvamento (3)</label>
+                    <select id="tipoSalvamento_3" onchange="alternarSalvamento(3)">
+                        <option value="fijo">Valor Fijo Neto</option>
+                        <option value="porcentaje">Porcentaje de la Inversión (%)</option>
+                    </select>
+                </div>
+                <div id="grupo_salvamento_3" class="form-group">
+                    <label id="lblSalvamento_3" for="salvamento_3">Valor de Salvamento Fijo (S₃)</label>
+                    <input type="number" step="0.01" id="salvamento_3">
+                </div>
+            </div>
+
+            <div id="block_alt_4" class="form-group hidden">
+                <h2 style="border-bottom: 1px solid var(--azul-borde); padding-bottom: 5px;">Alternativa 4</h2>
+                <div id="grupo_inversion_4" class="form-group">
+                    <label for="inversion_4">Inversión Inicial (P₄)</label>
+                    <input type="number" step="0.01" id="inversion_4">
+                </div>
+                <div id="grupo_flujo_4" class="form-group">
+                    <label for="flujo_4">Flujo Neto Anual (A₄)</label>
+                    <input type="number" step="0.01" id="flujo_4">
+                </div>
+                <div id="grupo_vida_4" class="form-group">
+                    <label for="vida_4">Vida Útil (N₄)</label>
+                    <input type="number" step="1" id="vida_4">
+                </div>
+                <div class="form-group">
+                    <label for="tipoSalvamento_4">Tipo de Valor de Salvamento (4)</label>
+                    <select id="tipoSalvamento_4" onchange="alternarSalvamento(4)">
+                        <option value="fijo">Valor Fijo Neto</option>
+                        <option value="porcentaje">Porcentaje de la Inversión (%)</option>
+                    </select>
+                </div>
+                <div id="grupo_salvamento_4" class="form-group">
+                    <label id="lblSalvamento_4" for="salvamento_4">Valor de Salvamento Fijo (S₄)</label>
+                    <input type="number" step="0.01" id="salvamento_4">
+                </div>
+            </div>
+
+            <div id="block_alt_5" class="form-group hidden">
+                <h2 style="border-bottom: 1px solid var(--azul-borde); padding-bottom: 5px;">Alternativa 5</h2>
+                <div id="grupo_inversion_5" class="form-group">
+                    <label for="inversion_5">Inversión Inicial (P₅)</label>
+                    <input type="number" step="0.01" id="inversion_5">
+                </div>
+                <div id="grupo_flujo_5" class="form-group">
+                    <label for="flujo_5">Flujo Neto Anual (A₅)</label>
+                    <input type="number" step="0.01" id="flujo_5">
+                </div>
+                <div id="grupo_vida_5" class="form-group">
+                    <label for="vida_5">Vida Útil (N₅)</label>
+                    <input type="number" step="1" id="vida_5">
+                </div>
+                <div class="form-group">
+                    <label for="tipoSalvamento_5">Tipo de Valor de Salvamento (5)</label>
+                    <select id="tipoSalvamento_5" onchange="alternarSalvamento(5)">
+                        <option value="fijo">Valor Fijo Neto</option>
+                        <option value="porcentaje">Porcentaje de la Inversión (%)</option>
+                    </select>
+                </div>
+                <div id="grupo_salvamento_5" class="form-group">
+                    <label id="lblSalvamento_5" for="salvamento_5">Valor de Salvamento Fijo (S₅)</label>
+                    <input type="number" step="0.01" id="salvamento_5">
+                </div>
+            </div>
+
+            <div id="block_alt_6" class="form-group hidden">
+                <h2 style="border-bottom: 1px solid var(--azul-borde); padding-bottom: 5px;">Alternativa 6</h2>
+                <div id="grupo_inversion_6" class="form-group">
+                    <label for="inversion_6">Inversión Inicial (P₆)</label>
+                    <input type="number" step="0.01" id="inversion_6">
+                </div>
+                <div id="grupo_flujo_6" class="form-group">
+                    <label for="flujo_6">Flujo Neto Anual (A₆)</label>
+                    <input type="number" step="0.01" id="flujo_6">
+                </div>
+                <div id="grupo_vida_6" class="form-group">
+                    <label for="vida_6">Vida Útil (N₆)</label>
+                    <input type="number" step="1" id="vida_6">
+                </div>
+                <div class="form-group">
+                    <label for="tipoSalvamento_6">Tipo de Valor de Salvamento (6)</label>
+                    <select id="tipoSalvamento_6" onchange="alternarSalvamento(6)">
+                        <option value="fijo">Valor Fijo Neto</option>
+                        <option value="porcentaje">Porcentaje de la Inversión (%)</option>
+                    </select>
+                </div>
+                <div id="grupo_salvamento_6" class="form-group">
+                    <label id="lblSalvamento_6" for="salvamento_6">Valor de Salvamento Fijo (S₆)</label>
+                    <input type="number" step="0.01" id="salvamento_6">
+                </div>
+            </div>
+
+            <div id="block_alt_7" class="form-group hidden">
+                <h2 style="border-bottom: 1px solid var(--azul-borde); padding-bottom: 5px;">Alternativa 7</h2>
+                <div id="grupo_inversion_7" class="form-group">
+                    <label for="inversion_7">Inversión Inicial (P₇)</label>
+                    <input type="number" step="0.01" id="inversion_7">
+                </div>
+                <div id="grupo_flujo_7" class="form-group">
+                    <label for="flujo_7">Flujo Neto Anual (A₇)</label>
+                    <input type="number" step="0.01" id="flujo_7">
+                </div>
+                <div id="grupo_vida_7" class="form-group">
+                    <label for="vida_7">Vida Útil (N₇)</label>
+                    <input type="number" step="1" id="vida_7">
+                </div>
+                <div class="form-group">
+                    <label for="tipoSalvamento_7">Tipo de Valor de Salvamento (7)</label>
+                    <select id="tipoSalvamento_7" onchange="alternarSalvamento(7)">
+                        <option value="fijo">Valor Fijo Neto</option>
+                        <option value="porcentaje">Porcentaje de la Inversión (%)</option>
+                    </select>
+                </div>
+                <div id="grupo_salvamento_7" class="form-group">
+                    <label id="lblSalvamento_7" for="salvamento_7">Valor de Salvamento Fijo (S₇)</label>
+                    <input type="number" step="0.01" id="salvamento_7">
+                </div>
+            </div>
+
+            <div id="block_alt_8" class="form-group hidden">
+                <h2 style="border-bottom: 1px solid var(--azul-borde); padding-bottom: 5px;">Alternativa 8</h2>
+                <div id="grupo_inversion_8" class="form-group">
+                    <label for="inversion_8">Inversión Inicial (P₈)</label>
+                    <input type="number" step="0.01" id="inversion_8">
+                </div>
+                <div id="grupo_flujo_8" class="form-group">
+                    <label for="flujo_8">Flujo Neto Anual (A₈)</label>
+                    <input type="number" step="0.01" id="flujo_8">
+                </div>
+                <div id="grupo_vida_8" class="form-group">
+                    <label for="vida_8">Vida Útil (N₈)</label>
+                    <input type="number" step="1" id="vida_8">
+                </div>
+                <div class="form-group">
+                    <label for="tipoSalvamento_8">Tipo de Valor de Salvamento (8)</label>
+                    <select id="tipoSalvamento_8" onchange="alternarSalvamento(8)">
+                        <option value="fijo">Valor Fijo Neto</option>
+                        <option value="porcentaje">Porcentaje de la Inversión (%)</option>
+                    </select>
+                </div>
+                <div id="grupo_salvamento_8" class="form-group">
+                    <label id="lblSalvamento_8" for="salvamento_8">Valor de Salvamento Fijo (S₈)</label>
+                    <input type="number" step="0.01" id="salvamento_8">
+                </div>
+            </div>
+
+            <button onclick="procesarAlternativas()">Evaluar Alternativas</button>
+        </div>
+
+        <div id="resultado"></div>
+        
+        <a href="index.html"><button class="btn-nav">← Volver al Menú Principal</button></a>
+    </main>
+
+    <footer>
+        </footer>
+    
+    <script src="../scripts/alternativas.js"></script>
+</body>
+</html>
