@@ -261,3 +261,7 @@ main a {
         font-size: 20px;
     }
 }
+
+.ocultar{
+    display: none;
+}
