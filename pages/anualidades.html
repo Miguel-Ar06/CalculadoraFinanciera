@@ -1,22 +1,90 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../styles/style.css"/>
-    <title>Calculadora Financiera</title>
+    <title>Calculadora Financiera - Anualidades</title>
 </head>
 <body>
     <header>
-        
-    </header>
+        </header>
 
     <main> 
-        <h1>Cálculo de anualidades (cuotas)</h1>
+        <h1>Cálculo de Anualidades</h1>
+
+        <div class="form-group">
+            <label for="tipoAnualidad">Tipo de Anualidad</label>
+            <select id="tipoAnualidad" onchange="configurarFormulario()">
+                <option value="ordinaria">Ordinaria (Vencida)</option>
+                <option value="anticipada">Anticipada</option>
+                <option value="diferida">Diferida</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="variableCalcular">¿Qué desea calcular?</label>
+            <select id="variableCalcular" onchange="configurarFormulario()">
+                <option value="cuota">Cuota / Anualidad (A)</option>
+                <option value="presente">Valor Presente (P)</option>
+                <option value="futuro">Valor Futuro (F)</option>
+                <option value="tasa">Tasa de Interés (i%)</option>
+                <option value="periodos">Número de Periodos (N)</option>
+                <option id="optGracia" value="periodo-gracia" class="hidden">Periodos de Gracia (K)</option>
+            </select>
+        </div>
+
+        <div id="grupo_base_calculo" class="form-group hidden">
+            <label for="baseCalculo">Dato financiero conocido</label>
+            <select id="baseCalculo" onchange="configurarFormulario()">
+                <option value="usar-presente">Usar Valor Presente (P)</option>
+                <option value="usar-futuro">Usar Valor Futuro (F)</option>
+            </select>
+        </div>
+
+        <div id="formularioCampos" class="form-container">
+            
+            <div id="grupo_tasa" class="form-group hidden">
+                <label for="tasaInteres">Tasa de Interés por periodo (en %, ej: 12)</label>
+                <input type="number" step="any" id="tasaInteres">
+            </div>
+
+            <div id="grupo_periodos" class="form-group hidden">
+                <label for="periodos">Número de Periodos de pago (N)</label>
+                <input type="number" step="1" id="periodos">
+            </div>
+
+            <div id="grupo_anualidad" class="form-group hidden">
+                <label for="anualidad">Cuota / Anualidad (A)</label>
+                <input type="number" step="0.01" id="anualidad">
+            </div>
+
+            <div id="grupo_presente" class="form-group hidden">
+                <label for="valorPresente">Valor Presente (P)</label>
+                <input type="number" step="0.01" id="valorPresente">
+            </div>
+
+            <div id="grupo_futuro" class="form-group hidden">
+                <label for="valorFuturo">Valor Futuro (F)</label>
+                <input type="number" step="0.01" id="valorFuturo">
+            </div>
+
+            <div id="grupo_gracia" class="form-group hidden">
+                <label for="periodosGracia">Periodos de Gracia (K)</label>
+                <input type="number" step="1" id="periodosGracia">
+            </div>
+
+            <button onclick="calcularAnualidades()">Ejecutar Cálculo</button>
+        </div>
+
+        <div id="resultado"></div>
+        
+        <a href="index.html"><button class="btn-nav">← Volver al Menú Principal</button></a>
     </main>
 
     <footer>
-        
-    </footer>
+        </footer>
+    
+    <script src="../scripts/anualidades.js"></script>
 </body>
 </html>
