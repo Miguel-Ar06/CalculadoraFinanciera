@@ -1,13 +1,4 @@
-let monedaActual = '$';
-
 document.addEventListener("DOMContentLoaded", () => {
-    monedaActual = localStorage.getItem('moneda') || '$';
-    const sufijo = ` [${monedaActual.trim()}]`;
-    
-    document.querySelector('label[for="anualidad"]').textContent = `Cuota / Anualidad (A)${sufijo}`;
-    document.querySelector('label[for="valorPresente"]').textContent = `Valor Presente (P)${sufijo}`;
-    document.querySelector('label[for="valorFuturo"]').textContent = `Valor Futuro (F)${sufijo}`;
-
     configurarFormulario();
 });
 
@@ -15,11 +6,10 @@ function configurarFormulario() {
     const tipo = document.getElementById("tipoAnualidad").value;
     const objetivo = document.getElementById("variableCalcular").value;
     const base = document.getElementById("baseCalculo").value;
-    const formCampos = document.getElementById("formularioCampos");
-    
+
     ocultarResultado();
 
-    // Habilitar la opción de período de gracia únicamente si es diferida
+    // Habilitar período de gracia si es diferida
     const optGracia = document.getElementById("optGracia");
     if (tipo === "diferida") {
         optGracia.classList.remove("hidden");
@@ -31,7 +21,7 @@ function configurarFormulario() {
         }
     }
 
-    // Determinar visibilidad del selector de base financiera (P o F)
+    // Determinar si se necesita selector de base (P o F)
     const grupoBase = document.getElementById("grupo_base_calculo");
     const necesitaBase = ["cuota", "tasa", "periodos"].includes(objetivo);
     if (necesitaBase) {
@@ -40,11 +30,10 @@ function configurarFormulario() {
         grupoBase.classList.add("hidden");
     }
 
-    // Ocultar de entrada todos los bloques de inputs
+    // Resetear visibilidad de inputs
     const grupos = ["grupo_tasa", "grupo_periodos", "grupo_anualidad", "grupo_presente", "grupo_futuro", "grupo_gracia"];
     grupos.forEach(id => document.getElementById(id).classList.add("hidden"));
 
-    // Mostrar inputs de forma condicional según la variable a despejar
     if (objetivo !== "tasa") document.getElementById("grupo_tasa").classList.remove("hidden");
     if (objetivo !== "periodos") document.getElementById("grupo_periodos").classList.remove("hidden");
     if (objetivo !== "cuota") document.getElementById("grupo_anualidad").classList.remove("hidden");
@@ -63,26 +52,31 @@ function configurarFormulario() {
     }
 }
 
-// ==========================================
-//   LÓGICA DE CÁLCULO FINANCIERO (INTACTA)
-// ==========================================
-
 function calcularValorPresente(A, i, N, tipo, K = 0) { 
-    if (i === 0) return A * N;
-    let P = A * ((1 - Math.pow(1 + i, -N)) / i);
+    if (i === 0) return trunc2(A * N);
+    
+    const baseFactor = trunc2(1 + i);
+    const powNegN = trunc2(Math.pow(baseFactor, -N));
+    let P = trunc2(A * trunc2(trunc2(1 - powNegN) / i));
+
     if (tipo === 'anticipada') {
-        P = P * (1 + i);
+        P = trunc2(P * trunc2(1 + i));
     } else if (tipo === 'diferida') {
-        P = P * Math.pow(1 + i, -K);
+        const powNegK = trunc2(Math.pow(baseFactor, -K));
+        P = trunc2(P * powNegK);
     }
     return P;
 }
 
 function calcularValorFuturo(A, i, N, tipo) { 
-    if (i === 0) return A * N;
-    let F = A * ((Math.pow(1 + i, N) - 1) / i);
+    if (i === 0) return trunc2(A * N);
+
+    const baseFactor = trunc2(1 + i);
+    const powN = trunc2(Math.pow(baseFactor, N));
+    let F = trunc2(A * trunc2(trunc2(powN - 1) / i));
+
     if (tipo === 'anticipada') {
-        F = F * (1 + i);
+        F = trunc2(F * trunc2(1 + i));
     }
     return F;
 }
@@ -90,7 +84,7 @@ function calcularValorFuturo(A, i, N, tipo) {
 function calcularTasaNewtonRaphson(tipo, base, P, F, A, N, K) {
     let i = 0.1; 
     const maxIter = 100; 
-    const tolerancia = 1e-7;   
+    const tolerancia = 1e-6;   
 
     for (let iter = 0; iter < maxIter; iter++) {
         if (Math.abs(i) < 1e-6) i = i < 0 ? -1e-6 : 1e-6;
@@ -130,15 +124,11 @@ function calcularTasaNewtonRaphson(tipo, base, P, F, A, N, K) {
         if (Math.abs(derivada) < 1e-12) break;
 
         let nuevoI = i - (funcion / derivada);
-        if (Math.abs(nuevoI - i) < tolerancia) return nuevoI;
+        if (Math.abs(nuevoI - i) < tolerancia) return trunc2(nuevoI);
         i = nuevoI;
     }
-    return i; 
+    return trunc2(i); 
 }
-
-// ==========================================
-//          SISTEMA DE BINDING (UI)
-// ==========================================
 
 function calcularAnualidades() {
     const tipo = document.getElementById("tipoAnualidad").value;
@@ -146,8 +136,8 @@ function calcularAnualidades() {
     const base = document.getElementById("baseCalculo").value;
     const resDiv = document.getElementById("resultado");
 
-    // Extracción limpia validando contra la clase .hidden del contenedor correspondientes
-    const i = !document.getElementById('grupo_tasa').classList.contains('hidden') ? parseFloat(document.getElementById('tasaInteres').value) / 100 : null;
+    const iRaw = !document.getElementById('grupo_tasa').classList.contains('hidden') ? parseFloat(document.getElementById('tasaInteres').value) : null;
+    const i = iRaw !== null ? trunc2(iRaw / 100) : null;
     const N = !document.getElementById('grupo_periodos').classList.contains('hidden') ? parseInt(document.getElementById('periodos').value) : null;
     const A = !document.getElementById('grupo_anualidad').classList.contains('hidden') ? parseFloat(document.getElementById('anualidad').value) : null;
     const P = !document.getElementById('grupo_presente').classList.contains('hidden') ? parseFloat(document.getElementById('valorPresente').value) : null;
@@ -156,80 +146,74 @@ function calcularAnualidades() {
 
     let resultado = 0;
     let texto = "";
-    let color = "";
 
     try {
         switch (objetivo) {
             case 'presente':
-                if (isNaN(A) || isNaN(i) || isNaN(N)) throw "Faltan datos obligatorios.";
+                if ([A, i, N].some(val => val === null || isNaN(val))) throw "Faltan datos obligatorios.";
                 resultado = calcularValorPresente(A, i, N, tipo, K);
-                color = resultado < 0 ? "val-negativo" : "val-positivo";
-                texto = `Valor Presente (P): <span class="${color}">${monedaActual}${resultado.toFixed(2)}</span>`;
+                texto = `<strong>Valor Presente (P):</strong><br>${formatearDual(resultado, true)}`;
                 break;
 
             case 'futuro':
-                if (isNaN(A) || isNaN(i) || isNaN(N)) throw "Faltan datos obligatorios.";
+                if ([A, i, N].some(val => val === null || isNaN(val))) throw "Faltan datos obligatorios.";
                 resultado = calcularValorFuturo(A, i, N, tipo);
-                color = resultado < 0 ? "val-negativo" : "val-positivo";
-                texto = `Valor Futuro (F): <span class="${color}">${monedaActual}${resultado.toFixed(2)}</span>`;
+                texto = `<strong>Valor Futuro (F):</strong><br>${formatearDual(resultado, true)}`;
                 break;
 
             case 'cuota':
-                if (isNaN(i) || isNaN(N)) throw "Faltan datos obligatorios.";
+                if ([i, N].some(val => val === null || isNaN(val))) throw "Faltan datos obligatorios.";
                 if (base === 'usar-presente') {
-                    if (isNaN(P)) throw "Introduce el Valor Presente (P).";
-                    resultado = P / calcularValorPresente(1, i, N, tipo, K);
+                    if (P === null || isNaN(P)) throw "Introduce el Valor Presente (P).";
+                    const factorVP = calcularValorPresente(1, i, N, tipo, K);
+                    if (factorVP === 0) throw "División por cero.";
+                    resultado = trunc2(P / factorVP);
                 } else {
-                    if (isNaN(F)) throw "Introduce el Valor Futuro (F).";
-                    resultado = F / calcularValorFuturo(1, i, N, tipo);
+                    if (F === null || isNaN(F)) throw "Introduce el Valor Futuro (F).";
+                    const factorVF = calcularValorFuturo(1, i, N, tipo);
+                    if (factorVF === 0) throw "División por cero.";
+                    resultado = trunc2(F / factorVF);
                 }
-                color = resultado < 0 ? "val-negativo" : "val-positivo";
-                texto = `Cuota / Anualidad (A): <span class="${color}">${monedaActual}${resultado.toFixed(2)}</span>`;
+                texto = `<strong>Cuota / Anualidad (A):</strong><br>${formatearDual(resultado, true)}`;
                 break;
 
             case 'periodos':
-                if (isNaN(A) || isNaN(i)) throw "Faltan datos obligatorios.";
+                if ([A, i].some(val => val === null || isNaN(val))) throw "Faltan datos obligatorios.";
                 if (base === 'usar-presente') {
-                    if (isNaN(P)) throw "Introduce el Valor Presente (P).";
+                    if (P === null || isNaN(P)) throw "Introduce el Valor Presente (P).";
                     let P_ajustado = P;
-                    if (tipo === 'anticipada') P_ajustado = P / (1 + i);
-                    if (tipo === 'diferida') P_ajustado = P * Math.pow(1 + i, K);
+                    if (tipo === 'anticipada') P_ajustado = trunc2(P / trunc2(1 + i));
+                    if (tipo === 'diferida') P_ajustado = trunc2(P * trunc2(Math.pow(trunc2(1 + i), K)));
                     
-                    let argumentoLog = 1 - (P_ajustado * i / A);
-                    if (argumentoLog <= 0) throw "Error lógico: Los parámetros impiden amortizar la deuda.";
-                    resultado = -Math.log(argumentoLog) / Math.log(1 + i);
+                    let argLog = 1 - ((P_ajustado * i) / A);
+                    if (argLog <= 0) throw "Error lógico: Los parámetros impiden amortizar la deuda (los intereses superan el valor de la cuota).";
+                    resultado = trunc2(-Math.log(argLog) / Math.log(1 + i));
                 } else {
-                    if (isNaN(F)) throw "Introduce el Valor Futuro (F).";
-                    let F_ajustado = (tipo === 'anticipada') ? F / (1 + i) : F;
+                    if (F === null || isNaN(F)) throw "Introduce el Valor Futuro (F).";
+                    let F_ajustado = (tipo === 'anticipada') ? trunc2(F / (1 + i)) : F;
                     
-                    let argumentoLog = (F_ajustado * i / A) + 1;
-                    if (argumentoLog <= 0) throw "Error lógico: Datos incongruentes para un fondo acumulado.";
-                    resultado = Math.log(argumentoLog) / Math.log(1 + i);
+                    let argLog = ((F_ajustado * i) / A) + 1;
+                    if (argLog <= 0) throw "Error lógico: Datos incongruentes para un fondo acumulado.";
+                    resultado = trunc2(Math.log(argLog) / Math.log(1 + i));
                 }
-                color = resultado < 0 ? "val-negativo" : "val-positivo";
-                texto = `Número de Periodos (N): <span class="${color}">${Math.ceil(resultado)} pagos</span> (Exacto: ${resultado.toFixed(2)})`;
+                texto = `<strong>Número de Periodos (N):</strong><br><span class="val-positivo" style="font-size:22px; font-weight:800;">${Math.ceil(resultado)} pagos</span> (Exacto: ${resultado.toFixed(2)})`;
                 break;
 
             case 'periodo-gracia':
-                if (isNaN(P) || isNaN(A) || isNaN(i) || isNaN(N)) throw "Faltan datos obligatorios.";
+                if ([P, A, i, N].some(val => val === null || isNaN(val))) throw "Faltan datos obligatorios.";
                 let P_ordinario = calcularValorPresente(A, i, N, 'ordinaria');
-                let argumentoK = P_ordinario / P;
-                if (argumentoK <= 0) throw "Error matemático: El valor presente introducido es inválido.";
-                resultado = Math.log(argumentoK) / Math.log(1 + i);
-                
-                color = resultado < 0 ? "val-negativo" : "val-positivo";
-                texto = `Periodos de Gracia (K): <span class="${color}">${Math.round(resultado)} periodos</span> (Exacto: ${resultado.toFixed(2)})`;
+                let argK = trunc2(P_ordinario / P);
+                if (argK <= 0) throw "Error matemático: El valor presente introducido es inválido.";
+                resultado = trunc2(Math.log(argK) / Math.log(1 + i));
+                texto = `<strong>Periodos de Gracia (K):</strong><br><span class="val-positivo" style="font-size:22px; font-weight:800;">${Math.round(resultado)} periodos</span> (Exacto: ${resultado.toFixed(2)})`;
                 break;
 
             case 'tasa':
-                if (isNaN(N) || isNaN(A)) throw "Faltan datos obligatorios.";
+                if ([N, A].some(val => val === null || isNaN(val))) throw "Faltan datos obligatorios.";
                 resultado = calcularTasaNewtonRaphson(tipo, base, P, F, A, N, K);
-                
-                if (isNaN(resultado) || resultado <= -1) {
-                    throw "Los datos ingresados impiden calcular una tasa de interés real.";
-                }
-                color = resultado < 0 ? "val-negativo" : "val-positivo";
-                texto = `Tasa de Interés (i): <span class="${color}">${(resultado * 100).toFixed(4)}%</span> por periodo`;
+                if (isNaN(resultado) || resultado <= -1) throw "Los datos ingresados impiden calcular una tasa de interés real.";
+                const pct = trunc2(resultado * 100);
+                texto = `<strong>Tasa de Interés por período (i):</strong><br><span class="val-positivo" style="font-size:22px; font-weight:800;">${pct.toFixed(2)}%</span>`;
                 break;
         }
 
@@ -252,7 +236,8 @@ function mostrarError(elemento, mensaje) {
 }
 
 function ocultarResultado() {
-    document.getElementById("resultado").style.display = "none";
+    const resDiv = document.getElementById("resultado");
+    if (resDiv) resDiv.style.display = "none";
 }
 
 document.addEventListener("input", function(e) {

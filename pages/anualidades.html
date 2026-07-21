@@ -8,91 +8,115 @@
 </head>
 <body>
     <header>
-        </header>
+        Cálculo de Anualidades
+    </header>
 
-    <main> 
-        <h1>Cálculo de Anualidades</h1>
+    <div class="page-container">
+        <main> 
+            <h1>Cálculo de Anualidades</h1>
+            <h3>Calcule cuotas, valor presente, valor futuro, tasas y períodos en anualidades ordinarias, anticipadas y diferidas.</h3>
 
-        <div class="form-group">
-            <label for="tipoAnualidad">Tipo de Anualidad</label>
-            <select id="tipoAnualidad" onchange="configurarFormulario()">
-                <option value="ordinaria">Ordinaria (Vencida)</option>
-                <option value="anticipada">Anticipada</option>
-                <option value="diferida">Diferida</option>
-            </select>
-        </div>
+            <div class="form-group">
+                <label for="tipoAnualidad">Tipo de Anualidad</label>
+                <select id="tipoAnualidad" onchange="configurarFormulario()">
+                    <option value="ordinaria">Ordinaria (Vencida)</option>
+                    <option value="anticipada">Anticipada</option>
+                    <option value="diferida">Diferida</option>
+                </select>
+            </div>
 
-        <div class="form-group">
-            <label for="variableCalcular">¿Qué desea calcular?</label>
-            <select id="variableCalcular" onchange="configurarFormulario()">
-                <option value="cuota">Cuota / Anualidad (A)</option>
-                <option value="presente">Valor Presente (P)</option>
-                <option value="futuro">Valor Futuro (F)</option>
-                <option value="tasa">Tasa de Interés (i%)</option>
-                <option value="periodos">Número de Periodos (N)</option>
-                <option id="optGracia" value="periodo-gracia" class="hidden">Periodos de Gracia (K)</option>
-            </select>
-        </div>
+            <div class="form-group">
+                <label for="variableCalcular">¿Qué desea calcular?</label>
+                <select id="variableCalcular" onchange="configurarFormulario()">
+                    <option value="cuota">Cuota / Anualidad (A)</option>
+                    <option value="presente">Valor Presente (P)</option>
+                    <option value="futuro">Valor Futuro (F)</option>
+                    <option value="tasa">Tasa de Interés (i%)</option>
+                    <option value="periodos">Número de Periodos (N)</option>
+                    <option id="optGracia" value="periodo-gracia" class="hidden">Periodos de Gracia (K)</option>
+                </select>
+            </div>
 
-        <div id="grupo_base_calculo" class="form-group hidden">
-            <label for="baseCalculo">Dato financiero conocido</label>
-            <select id="baseCalculo" onchange="configurarFormulario()">
-                <option value="usar-presente">Usar Valor Presente (P)</option>
-                <option value="usar-futuro">Usar Valor Futuro (F)</option>
-            </select>
-        </div>
+            <div id="grupo_base_calculo" class="form-group hidden">
+                <label for="baseCalculo">Dato financiero conocido</label>
+                <select id="baseCalculo" onchange="configurarFormulario()">
+                    <option value="usar-presente">Usar Valor Presente (P)</option>
+                    <option value="usar-futuro">Usar Valor Futuro (F)</option>
+                </select>
+            </div>
 
-        <div id="formularioCampos" class="form-container">
+            <div id="formularioCampos" class="form-container">
+                <div id="grupo_tasa" class="form-group hidden">
+                    <label for="tasaInteres">Tasa de Interés por periodo (en %, ej: 12)</label>
+                    <input type="number" step="0.01" id="tasaInteres" placeholder="Ej: 12">
+                </div>
+
+                <div id="grupo_periodos" class="form-group hidden">
+                    <label for="periodos">Número de Periodos de pago (N)</label>
+                    <input type="number" step="1" id="periodos" placeholder="Ej: 24">
+                </div>
+
+                <div id="grupo_anualidad" class="form-group hidden">
+                    <label for="anualidad">Cuota / Anualidad (A)</label>
+                    <input type="number" step="0.01" id="anualidad" placeholder="Ej: 500">
+                </div>
+
+                <div id="grupo_presente" class="form-group hidden">
+                    <label for="valorPresente">Valor Presente (P)</label>
+                    <input type="number" step="0.01" id="valorPresente" placeholder="Ej: 10000">
+                </div>
+
+                <div id="grupo_futuro" class="form-group hidden">
+                    <label for="valorFuturo">Valor Futuro (F)</label>
+                    <input type="number" step="0.01" id="valorFuturo" placeholder="Ej: 15000">
+                </div>
+
+                <div id="grupo_gracia" class="form-group hidden">
+                    <label for="periodosGracia">Periodos de Gracia (K)</label>
+                    <input type="number" step="1" id="periodosGracia" placeholder="Ej: 3">
+                </div>
+
+                <div class="button-actions">
+                    <button type="button" onclick="calcularAnualidades()">Ejecutar Cálculo</button>
+                    <button type="button" onclick="limpiarCamposGenerico('formularioCampos')" class="btn-clear">Limpiar Campos</button>
+                </div>
+            </div>
+
+            <div id="resultado"></div>
             
-            <div id="grupo_tasa" class="form-group hidden">
-                <label for="tasaInteres">Tasa de Interés por periodo (en %, ej: 12)</label>
-                <input type="number" step="any" id="tasaInteres">
+            <a href="index.html"><button type="button" class="btn-nav">← Volver al Menú Principal</button></a>
+        </main>
+
+        <aside class="sidebar-panel">
+            <h2>📚 Teoría y Fórmulas</h2>
+
+            <div class="sidebar-section">
+                <h3>Anualidades Ordinarias (Vencidas)</h3>
+                <p>Serie de pagos periódicos constantes realizados al final de cada período.</p>
+                <div class="formula-box">P = A × [(1 - (1+i)⁻ᴺ) / i]</div>
+                <div class="formula-box">F = A × [((1+i)ᴺ - 1) / i]</div>
             </div>
 
-            <div id="grupo_periodos" class="form-group hidden">
-                <label for="periodos">Número de Periodos de pago (N)</label>
-                <input type="number" step="1" id="periodos">
+            <div class="sidebar-section">
+                <h3>Anualidades Anticipadas</h3>
+                <p>Pagos o depósitos efectuados al inicio de cada período.</p>
+                <div class="formula-box">P_ant = P_ord × (1 + i)</div>
+                <div class="formula-box">F_ant = F_ord × (1 + i)</div>
             </div>
 
-            <div id="grupo_anualidad" class="form-group hidden">
-                <label for="anualidad">Cuota / Anualidad (A)</label>
-                <input type="number" step="0.01" id="anualidad">
+            <div class="sidebar-section">
+                <h3>Anualidades Diferidas</h3>
+                <p>La serie de pagos comienza luego de transcurrir K períodos de gracia.</p>
+                <div class="formula-box">P_dif = P_ord × (1 + i)⁻ᴷ</div>
             </div>
-
-            <div id="grupo_presente" class="form-group hidden">
-                <label for="valorPresente">Valor Presente (P)</label>
-                <input type="number" step="0.01" id="valorPresente">
-            </div>
-
-            <div id="grupo_futuro" class="form-group hidden">
-                <label for="valorFuturo">Valor Futuro (F)</label>
-                <input type="number" step="0.01" id="valorFuturo">
-            </div>
-
-            <div id="grupo_gracia" class="form-group hidden">
-                <label for="periodosGracia">Periodos de Gracia (K)</label>
-                <input type="number" step="1" id="periodosGracia">
-            </div>
-
-            <button onclick="calcularAnualidades()">Ejecutar Cálculo</button>
-        </div>
-
-        <div id="resultado"></div>
-        
-        <a href="index.html"><button class="btn-nav">← Volver al Menú Principal</button></a>
-    </main>
+        </aside>
+    </div>
 
     <footer>
-        <h3>Anualidades</h3>
-            <p>Es una serie de flujos de efectivo (pagos, depósitos o retiros) periódicos, de igual valor, que se realizan a intervalos de tiempo constantes. El término "anualidad" no implica que los pagos sean anuales; pueden ser mensuales, trimestres o de cualquier otra frecuencia regular.</p>
-        <h3>Anualidades Ordinarias (o Vencidas)</h3>
-            <p>Son aquellas anualidades en las que los pagos o depósitos se realizan al final de cada periodo de tiempo (por ejemplo, el pago mensual de una tarjeta de crédito o una hipoteca).</p>
-        <h3>Anualidades Anticipadas</h3>
-            <p>Son aquellas anualidades en las que los pagos o depósitos se realizan al principio de cada periodo de tiempo (por ejemplo, el pago mensual del alquiler de una vivienda o una póliza de seguro).</p>
-        <h3>Anualidades Diferidas</h3>
-            <p>Son aquellas anualidades en las que la serie de pagos periódicos no comienza de inmediato, sino que se pospone un número determinado de periodos (periodo de gracia o diferimiento, representado por m).</p>
+        <p>Calculadora Financiera &copy; 2026</p>
     </footer>
     
+    <script src="../scripts/common.js"></script>
     <script src="../scripts/anualidades.js"></script>
 </body>
 </html>

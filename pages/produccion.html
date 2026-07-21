@@ -4,125 +4,81 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../styles/style.css"/>
-    <title>Calculadora Financiera</title>
+    <title>Calculadora Financiera - Capacidad de Producción</title>
 </head>
 <body>
     <header>
-
+        Capacidad de Producción
     </header>
 
-    <main> 
-        <h1>Cálculo de Costos y Producción</h1>
+    <div class="page-container">
+        <main> 
+            <h1>Cálculo de Capacidad de Producción</h1>
+            <h3>Mida y evalúe la tasa de utilización, la producción real y la capacidad máxima teórica.</h3>
 
-        <div class="form-group">
-            <label for="modeloCalculo">Seleccione el Modelo Matemático:</label>
-            <select id="modeloCalculo" onchange="cambiarModelo()">
-                <option value="">-- Seleccione un modelo --</option>
-                <optgroup label="Estructura de Costos">
-                    <option value="costo_total">Costo Total (CT = CF + v*Q)</option>
-                    <option value="punto_equilibrio">Análisis de Punto de Equilibrio</option>
-                    <option value="cocomo">Estimación Paramétrica (COCOMO II)</option>
-                </optgroup>
-                <optgroup label="Ingresos y Capacidad">
-                    <option value="ingreso_utilidad">Ingresos y Margen de Beneficio Real</option>
-                    <option value="formacion_precio">Formación de Precios (Margen Nominal)</option>
-                    <option value="capacidad">Capacidad de Producción (Utilización)</option>
-                </optgroup>
-            </select>
-        </div>
-
-        <div id="seccionVariable" class="form-group hidden">
-            <label for="variableObjetivo">¿Qué variable desea calcular (Despejar)?</label>
-            <select id="variableObjetivo" onchange="configurarFormulario()"></select>
-        </div>
-
-        <div id="formularioCampos" class="hidden form-container">
-            <div id="grupo_CT" class="form-group hidden">
-                <label for="costoTotal">Costo Total (CT)</label>
-                <input type="number" id="costoTotal" min="0">
-            </div>
-            <div id="grupo_CF" class="form-group hidden">
-                <label for="costoFijo">Costo Fijo (CF)</label>
-                <input type="number" id="costoFijo" min="0">
-            </div>
-            <div id="grupo_v" class="form-group hidden">
-                <label for="costoVariableUnitario">Costo Variable Unitario (v)</label>
-                <input type="number" id="costoVariableUnitario" min="0" step="0.01">
-            </div>
-            <div id="grupo_Q" class="form-group hidden">
-                <label for="cantidad">Cantidad / Producción Real (Q)</label>
-                <input type="number" id="cantidad" min="0">
-            </div>
-            <div id="grupo_P" class="form-group hidden">
-                <label for="precioUnitario">Precio Unitario de Venta (P)</label>
-                <input type="number" id="precioUnitario" min="0" step="0.01">
-            </div>
-            
-            <div id="grupo_IT" class="form-group hidden">
-                <label for="ingresoTotal">Ingreso Total (IT)</label>
-                <input type="number" id="ingresoTotal" min="0">
-            </div>
-            <div id="grupo_U" class="form-group hidden">
-                <label for="utilidad">Beneficio Real / Utilidad (U)</label>
-                <input type="number" id="utilidad"> </div>
-            <div id="grupo_Cu" class="form-group hidden">
-                <label for="costoUnitario">Costo Unitario Total (Cu)</label>
-                <input type="number" id="costoUnitario" min="0" step="0.01">
-            </div>
-            <div id="grupo_margen" class="form-group hidden">
-                <label for="margenGanancia">Margen de Beneficio Nominal (en decimal, ej: 0.30 para 30%)</label>
-                <input type="number" id="margenGanancia" step="0.01">
-            </div>
-
-            <div id="grupo_Qmax" class="form-group hidden">
-                <label for="capacidadMax">Capacidad Máxima de Producción</label>
-                <input type="number" id="capacidadMax" min="0">
-            </div>
-            <div id="grupo_utilizacion" class="form-group hidden">
-                <label for="tasaUtilizacion">Tasa de Utilización (% en decimal, ej: 0.85)</label>
-                <input type="number" id="tasaUtilizacion" min="0" max="1" step="0.01">
-            </div>
-            
-            <div id="grupo_modo_cocomo" class="form-group hidden">
-                <label for="modoCocomo">Complejidad del Software (COCOMO)</label>
-                <select id="modoCocomo">
-                    <option value="organico">Orgánico (Pequeño, estable)</option>
-                    <option value="semiacoplado">Semi-acoplado (Mediano, mixto)</option>
-                    <option value="embebido">Embebido (Rígido, complejo)</option>
+            <div class="form-group">
+                <label for="variableObjetivo">¿Qué variable desea calcular (Despejar)?</label>
+                <select id="variableObjetivo" onchange="configurarFormulario()">
+                    <option value="util">Tasa de Utilización de Capacidad (%)</option>
+                    <option value="Q">Producción Real (Q)</option>
+                    <option value="Qmax">Capacidad Máxima de Producción (Q_max)</option>
                 </select>
             </div>
-            <div id="grupo_KLOC" class="form-group hidden">
-                <label for="kloc">Líneas de Código en Miles (KLOC, min 0)</label>
-                <input type="number" id="kloc" min="0" step="0.1">
-            </div>
-            <div id="grupo_Esfuerzo" class="form-group hidden">
-                <label for="esfuerzo">Esfuerzo del Proyecto (E en Personas-Mes)</label>
-                <input type="number" id="esfuerzo" min="0" step="0.1">
+
+            <div id="formularioCampos" class="form-container">
+                <div id="grupo_Q" class="form-group hidden">
+                    <label for="cantidad">Producción Real Obtenida (Q)</label>
+                    <input type="number" id="cantidad" min="0" step="1" placeholder="Ej: 8500">
+                </div>
+
+                <div id="grupo_Qmax" class="form-group">
+                    <label for="capacidadMax">Capacidad Máxima de Producción (Q_max)</label>
+                    <input type="number" id="capacidadMax" min="0" step="1" placeholder="Ej: 10000">
+                </div>
+
+                <div id="grupo_utilizacion" class="form-group hidden">
+                    <label for="tasaUtilizacion">Tasa de Utilización (en %, ej: 85 para 85%)</label>
+                    <input type="number" id="tasaUtilizacion" min="0" max="100" step="0.1" placeholder="Ej: 85">
+                </div>
+
+                <div class="button-actions">
+                    <button type="button" onclick="ejecutarCalculoProduccion()">Ejecutar Cálculo</button>
+                    <button type="button" onclick="limpiarCamposGenerico('formularioCampos')" class="btn-clear">Limpiar Campos</button>
+                </div>
             </div>
 
-            <button onclick="ejecutarCalculo()">Ejecutar Cálculo</button>
-        </div>
+            <div id="resultado"></div>
+            <a href="index.html"><button type="button" class="btn-nav">← Volver al Menú Principal</button></a>
+        </main>
 
-        <div id="resultado"></div>
-        <a href="index.html"><button class="btn-nav">← Volver al Menú Principal</button></a>
-    </main>
+        <aside class="sidebar-panel">
+            <h2>📚 Teoría y Fórmulas</h2>
+
+            <div class="sidebar-section">
+                <h3>Tasa de Utilización (%)</h3>
+                <p>Relación entre la producción efectiva real obtenida y la capacidad máxima teórica instalada.</p>
+                <div class="formula-box">Utilización% = (Q / Q_max) × 100%</div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>Producción Real (Q)</h3>
+                <p>Volumen efectivo producido dado un nivel de utilización operativa.</p>
+                <div class="formula-box">Q = Q_max × (Utilización% / 100)</div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>Capacidad Máxima (Q_max)</h3>
+                <p>Capacidad potencial o de diseño al 100% de operación técnica.</p>
+                <div class="formula-box">Q_max = Q / (Utilización% / 100)</div>
+            </div>
+        </aside>
+    </div>
 
     <footer>
-        <h3>Costo Total (CT)</h3>
-            <p>Es la sumatoria de todos los gastos requeridos para llevar a cabo la producción de una cantidad determinada de bienes o servicios. Está compuesto por un componente fijo que no varía con la producción y un componente variable que depende directamente del volumen producido.</p>
-        <h3>Análisis de Punto de Equilibrio</h3>
-            <p>Es el cálculo matemático que determina el volumen de ventas o cantidad de unidades (Q_e) que una empresa debe producir y vender para que sus ingresos totales sean exactamente iguales a sus costos totales. En este nivel, la utilidad neta es igual a cero.</p>
-        <h3>Estimación Paramétrica (COCOMO II)</h3>
-            <p>Es un modelo matemático y estadístico utilizado en ingeniería de software para estimar el esfuerzo (en meses-persona), el tiempo de desarrollo y el costo de un proyecto, basándose principalmente en el tamaño del software expresado en miles de líneas de código fuente (KSLOC) y un conjunto de multiplicadores de costo.</p>
-        <h3>Ingresos y Margen de Beneficio Real</h3>
-            <p>Representa la rentabilidad efectiva y neta obtenida de las operaciones comerciales una vez deducidos todos los costos de producción y comercialización sobre las ventas reales. Mide la eficiencia con la que la empresa convierte sus ingresos en ganancias tangibles.</p>
-        <h3>Formación de Precios (Margen Nominal)</h3>
-            <p>Es el método técnico para establecer el precio de venta de un producto o servicio sumando un porcentaje de ganancia predeterminado (margen deseado) directamente sobre el costo de producción unitario.</p>
-        <h3>Capacidad de Producción (Utilización)</h3>
-            <p>Es la métrica porcentual que mide la relación entre la producción real obtenida por una planta o proceso financiero y la capacidad máxima teórica o de diseño para la que fue proyectada.</p>
-
+        <p>Calculadora Financiera &copy; 2026</p>
     </footer>
-    
-    <script src='../scripts/produccion.js'></script>
+
+    <script src="../scripts/common.js"></script>
+    <script src="../scripts/produccion.js"></script>
 </body>
 </html>

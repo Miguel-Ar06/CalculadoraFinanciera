@@ -1,53 +1,114 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../styles/style.css"/>
-    <title>Calculadora Financiera</title>
+    <title>Calculadora Financiera - Interés Simple y Compuesto</title>
 </head>
 <body>
     <header>
-        
+        Interés Simple y Compuesto
     </header>
 
-    <main> 
-        <h1>Cálculo de interés</h1>
-        <input type="radio" name="tipoInteres" id="rbSimple" value="simple" checked>Simple</input> 
-        <input type="radio" name="tipoInteres" id="rbCompuesto" value="compuesto">Compuesto</input> 
-        
-        <h3>Valores</h3>
-        <label for="cantPresente">Cantidad presente (P)</label>
-        <input type="number" id="cantPresente" min="0">
-            
-        <label for="cantFutura">Cantidad futura (F)</label>
-        <input type="number" id="cantFutura" min="0">
-            
-        <label for="tasaInteres">Tasa de interés (i%)</label>
-        <input type="number" step=".01" id="tasaInteres" min="0">
-            
-        <label for="numeroPeriodos">Número de periodos (N)</label>
-        <input type="number" id="numeroPeriodos" min="0">
-            
-        <button onclick="calcular()" name="calcular">Calcular</button>
-        <h3 id="resultado">____</h3>
-    </main>
+    <div class="page-container">
+        <main> 
+            <h1>Cálculo de Interés</h1>
+            <h3>Calcule el valor presente, valor futuro, tasa de interés, período o monto acumulado.</h3>
+
+            <div class="form-group">
+                <label>Tipo de Interés:</label>
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" name="tipoInteres" id="rbSimple" value="simple" checked onchange="configurarFormulario()"> Interés Simple
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="tipoInteres" id="rbCompuesto" value="compuesto" onchange="configurarFormulario()"> Interés Compuesto
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="variableACalcular">¿Qué deseas calcular?</label>
+                <select id="variableACalcular" onchange="configurarFormulario()">
+                    <option value="futuro">Valor Futuro (F)</option>
+                    <option value="presente">Valor Presente (P)</option>
+                    <option value="tasa">Tasa de Interés (i%)</option>
+                    <option value="periodos">Número de Períodos (N)</option>
+                    <option value="interes">Monto de Interés Ganado (I)</option>
+                </select>
+            </div>
+
+            <div id="formularioCampos" class="form-container">
+                <div id="grupo_P" class="form-group">
+                    <label for="cantPresente">Cantidad Presente / Capital (P)</label>
+                    <input type="number" id="cantPresente" min="0" step="0.01" placeholder="Ej: 1000">
+                </div>
+
+                <div id="grupo_F" class="form-group hidden">
+                    <label for="cantFutura">Cantidad Futura / Monto Final (F)</label>
+                    <input type="number" id="cantFutura" min="0" step="0.01" placeholder="Ej: 1250">
+                </div>
+
+                <div id="grupo_i" class="form-group">
+                    <label for="tasaInteres">Tasa de Interés por Período (i%)</label>
+                    <input type="number" step="0.01" id="tasaInteres" min="0" placeholder="Ej: 5 (para 5%)">
+                </div>
+
+                <div id="grupo_N" class="form-group">
+                    <label for="numeroPeriodos">Número de Períodos (N)</label>
+                    <input type="number" step="1" id="numeroPeriodos" min="0" placeholder="Ej: 12">
+                </div>
+
+                <div class="button-actions">
+                    <button type="button" onclick="calcularInteres()">Calcular</button>
+                    <button type="button" onclick="limpiarCamposInteres()" class="btn-clear">Limpiar Campos</button>
+                </div>
+            </div>
+
+            <div id="resultado"></div>
+
+            <a href="index.html"><button type="button" class="btn-nav">← Volver al Menú Principal</button></a>
+        </main>
+
+        <aside class="sidebar-panel">
+            <h2>📚 Teoría y Fórmulas</h2>
+
+            <div class="sidebar-section">
+                <h3>Interés Simple (I)</h3>
+                <p>Es el rendimiento financiero generado exclusivamente sobre el capital inicial (P), permaneciendo constante en cada período.</p>
+                <div class="formula-box">F = P × (1 + i × N)</div>
+                <div class="formula-box">I = P × i × N</div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>Interés Compuesto (I_c)</h3>
+                <p>Los intereses devengados al final de cada período se capitalizan (se suman al capital) para generar nuevos intereses.</p>
+                <div class="formula-box">F = P × (1 + i)ᴺ</div>
+                <div class="formula-box">P = F / (1 + i)ᴺ</div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>Despeje de Tasa de Interés (i)</h3>
+                <p>Porcentaje o costo por unidad de tiempo aplicable a la transacción.</p>
+                <div class="formula-box">Simple: i = (F/P - 1) / N</div>
+                <div class="formula-box">Compuesto: i = (F/P)¹/ᴺ - 1</div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>Despeje de Períodos (N)</h3>
+                <p>Duración o número de unidades de tiempo de la operación financiera.</p>
+                <div class="formula-box">Simple: N = (F/P - 1) / i</div>
+                <div class="formula-box">Compuesto: N = ln(F/P) / ln(1 + i)</div>
+            </div>
+        </aside>
+    </div>
 
     <footer>
-        <h3>Interés Simple (I)</h3>
-            <p>Es el rendimiento financiero generado cuando los intereses se calculan exclusivamente sobre el capital inicial (VP), permaneciendo constantes en cada periodo.</p>
-        <h3>Interés Compuesto (I_c)</h3>
-            <p>Es el rendimiento financiero generado cuando los intereses devengados al final de cada periodo se capitalizan, es decir, se suman al capital inicial para generar nuevos intereses en el siguiente periodo.</p>
-        <h3>Tasa de Interés (i)</h3>
-            <p>Es el coeficiente que determina el costo del dinero o el rendimiento de una inversión, expresado como un porcentaje por unidad de tiempo.</p>
-        <h3>Valor Presente (VP)</h3>
-            <p>Es el valor actual de un flujo de efectivo futuro, descontado a una tasa de interés específica. Representa el capital inicial de la operación.</p>
-        <h3>Valor Futuro (VF)</h3>
-            <p>Es la cantidad de dinero que alcanzará una inversión o préstamo en una fecha futura específica, tras acumular intereses.</p>
-        <h3>Periodos (n)</h3>
-            <p>Es el número de unidades de tiempo (días, meses, años) que dura la operación financiera y durante las cuales se aplica la tasa de interés.</p>
+        <p>Calculadora Financiera &copy; 2026</p>
     </footer>
-    
-    <script src='../scripts/script.js'></script>
+
+    <script src="../scripts/common.js"></script>
+    <script src="../scripts/interes.js"></script>
 </body>
 </html>

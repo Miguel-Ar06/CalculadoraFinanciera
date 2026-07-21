@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles/style.css"/>
+    <title>Calculadora Financiera - Depreciación y Reemplazo</title>
+</head>
+<body>
+    <header>
+        Depreciación y Análisis de Reemplazo
+    </header>
+
+    <div class="page-container">
+        <main style="max-width: 750px;"> 
+            <h1>Depreciación y Análisis de Reemplazo</h1>
+            <h3>Calcule tablas de depreciación de activos y evalúe la sustitución de equipos (Defensor vs. Retador).</h3>
+
+            <div class="form-group">
+                <label for="tipoModulo">Seleccione la Herramienta:</label>
+                <select id="tipoModulo" onchange="configurarFormulario()">
+                    <option value="linea_recta">Depreciación en Línea Recta (LR)</option>
+                    <option value="suma_digitos">Depreciación por Suma de los Dígitos de los Años (SDA)</option>
+                    <option value="saldo_decreciente">Depreciación por Saldo Doblemente Decreciente (DDB)</option>
+                    <option value="macrs">Sistema Acelerado de Recuperación de Costos (MACRS)</option>
+                    <option value="reemplazo">Análisis de Reemplazo de Equipos (Defensor vs. Retador)</option>
+                </select>
+            </div>
+
+            <!-- Formulario Depreciación -->
+            <div id="formDepreciacion" class="form-container">
+                <div class="form-group">
+                    <label for="costoInicial">Costo Inicial del Activo (P)</label>
+                    <input type="number" step="0.01" id="costoInicial" placeholder="Ej: 50000">
+                </div>
+
+                <div id="grupo_salvamento" class="form-group">
+                    <label for="valorSalvamento">Valor de Salvamento Estimado (S)</label>
+                    <input type="number" step="0.01" id="valorSalvamento" placeholder="Ej: 5000">
+                </div>
+
+                <div id="grupo_vida" class="form-group">
+                    <label for="vidaUtil">Vida Útil del Activo en Años (N)</label>
+                    <input type="number" step="1" id="vidaUtil" min="1" placeholder="Ej: 5">
+                </div>
+
+                <div id="grupo_macrs_anos" class="form-group hidden">
+                    <label for="tipoMacrs">Categoría de Recuperación MACRS:</label>
+                    <select id="tipoMacrs">
+                        <option value="3">3 Años (Herramientas, equipos de investigación)</option>
+                        <option value="5" selected>5 Años (Automóviles, camiones, computadoras)</option>
+                        <option value="7">7 Años (Maquinaria industrial, mobiliario de oficina)</option>
+                        <option value="10">10 Años (Equipos de transporte acuático/agrícola)</option>
+                    </select>
+                </div>
+
+                <div class="button-actions">
+                    <button type="button" onclick="calcularDepreciacion()">Generar Tabla de Depreciación</button>
+                    <button type="button" onclick="limpiarCamposGenerico('formDepreciacion')" class="btn-clear">Limpiar Campos</button>
+                </div>
+            </div>
+
+            <!-- Formulario Análisis de Reemplazo -->
+            <div id="formReemplazo" class="form-container hidden">
+                <div class="form-group">
+                    <label for="tmarReemplazo">Tasa de Rendimiento / TMAR (in %, ej: 12)</label>
+                    <input type="number" step="0.01" id="tmarReemplazo" placeholder="Ej: 12">
+                </div>
+
+                <h2 style="border-bottom: 1px solid var(--azul-borde); padding-bottom: 5px; color: var(--azul-primario); margin-top: 15px;">
+                    🛡️ Defensor (Activo Actual Existente)
+                </h2>
+                <div class="form-group">
+                    <label for="p_defensor">Valor Actual de Mercado / Inversión (P_D)</label>
+                    <input type="number" step="0.01" id="p_defensor" placeholder="Ej: 15000">
+                </div>
+                <div class="form-group">
+                    <label for="cao_defensor">Costo Anual de Operación y Mantenimiento (CAO_D)</label>
+                    <input type="number" step="0.01" id="cao_defensor" placeholder="Ej: 4000">
+                </div>
+                <div class="form-group">
+                    <label for="s_defensor">Valor de Salvamento al Final de su Vida (S_D)</label>
+                    <input type="number" step="0.01" id="s_defensor" placeholder="Ej: 2000">
+                </div>
+                <div class="form-group">
+                    <label for="n_defensor">Vida Útil Restante en Años (N_D)</label>
+                    <input type="number" step="1" id="n_defensor" min="1" placeholder="Ej: 3">
+                </div>
+
+                <h2 style="border-bottom: 1px solid var(--azul-borde); padding-bottom: 5px; color: var(--azul-primario); margin-top: 15px;">
+                    ⚔️ Retador (Activo Nuevo Propuesto)
+                </h2>
+                <div class="form-group">
+                    <label for="p_retador">Inversión Inicial de Adquisición (P_R)</label>
+                    <input type="number" step="0.01" id="p_retador" placeholder="Ej: 45000">
+                </div>
+                <div class="form-group">
+                    <label for="cao_retador">Costo Anual de Operación y Mantenimiento (CAO_R)</label>
+                    <input type="number" step="0.01" id="cao_retador" placeholder="Ej: 1500">
+                </div>
+                <div class="form-group">
+                    <label for="s_retador">Valor de Salvamento al Final de su Vida (S_R)</label>
+                    <input type="number" step="0.01" id="s_retador" placeholder="Ej: 8000">
+                </div>
+                <div class="form-group">
+                    <label for="n_retador">Vida Útil del Retador en Años (N_R)</label>
+                    <input type="number" step="1" id="n_retador" min="1" placeholder="Ej: 8">
+                </div>
+
+                <div class="button-actions">
+                    <button type="button" onclick="evaluarReemplazo()">Evaluar Reemplazo</button>
+                    <button type="button" onclick="limpiarCamposGenerico('formReemplazo')" class="btn-clear">Limpiar Campos</button>
+                </div>
+            </div>
+
+            <div id="resultado"></div>
+            <a href="index.html"><button type="button" class="btn-nav">← Volver al Menú Principal</button></a>
+        </main>
+
+        <aside class="sidebar-panel">
+            <h2>📚 Teoría y Fórmulas</h2>
+
+            <div class="sidebar-section">
+                <h3>Depreciación en Línea Recta (LR)</h3>
+                <p>Distribución uniforme del costo depreciable en cada año de vida útil.</p>
+                <div class="formula-box">D = (P - S) / N</div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>Suma de Dígitos de los Años (SDA)</h3>
+                <p>Método acelerado que asigna mayor depreciación en los primeros años.</p>
+                <div class="formula-box">D_t = (P - S) × (N - t + 1) / [N(N+1)/2]</div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>Saldo Doblemente Decreciente (DDB)</h3>
+                <p>Aplica el doble de la tasa en línea recta sobre el valor en libros residual.</p>
+                <div class="formula-box">d = 2 / N ; D_t = VL_{t-1} × d</div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>Sistema Acelerado MACRS</h3>
+                <p>Sistema normativo de recuperación de costos por porcentajes anuales fijos.</p>
+                <div class="formula-box">D_t = P × Porcentaje_MACRS_t</div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>Análisis de Reemplazo (Defensor vs. Retador)</h3>
+                <p>Compara el Costo Anual Uniforme Equivalente (CAUE) entre mantener el equipo actual (Defensor) o sustituirlo por uno nuevo (Retador).</p>
+                <div class="formula-box">CAUE = P(A/P, i, N) + CAO - S(A/F, i, N)</div>
+            </div>
+        </aside>
+    </div>
+
+    <footer>
+        <p>Calculadora Financiera &copy; 2026</p>
+    </footer>
+
+    <script src="../scripts/common.js"></script>
+    <script src="../scripts/depreciacion.js"></script>
+</body>
+</html>

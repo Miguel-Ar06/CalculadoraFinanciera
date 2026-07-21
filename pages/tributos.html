@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles/style.css"/>
+    <title>Calculadora Financiera - Elementos Tributarios Venezuela</title>
+</head>
+<body>
+    <header>
+        Elementos Tributarios e Impuestos (Venezuela)
+    </header>
+
+    <div class="page-container">
+        <main style="max-width: 750px;"> 
+            <h1>Cálculo de Elementos Tributarios (Venezuela)</h1>
+            <h3>Análisis del ISLR (Tarifa 2), IVA (SENIAT), IGTF y Flujo de Efectivo Después de Impuestos (FEDI).</h3>
+
+            <div class="form-group">
+                <label for="tipoTributo">Seleccione la Operación Tributaria:</label>
+                <select id="tipoTributo" onchange="configurarFormulario()">
+                    <option value="islr">Impuesto Sobre la Renta (ISLR - Tarifa 2 PJ) & FEDI</option>
+                    <option value="iva">Impuesto al Valor Agregado (IVA - Débito / Crédito Fiscal)</option>
+                    <option value="igtf">Impuesto a las Grandes Transacciones Financieras (IGTF 3%)</option>
+                    <option value="escudo">Escudo Fiscal de la Depreciación (Tax Shield)</option>
+                </select>
+            </div>
+
+            <!-- Formulario ISLR -->
+            <div id="formISLR" class="form-container">
+                <div class="form-group">
+                    <label for="ingresosBrutos">Ingresos Brutos Gravables</label>
+                    <input type="number" step="0.01" id="ingresosBrutos" placeholder="Ej: 100000">
+                </div>
+
+                <div class="form-group">
+                    <label for="gastosDeducibles">Costos y Gastos Operativos Deducibles</label>
+                    <input type="number" step="0.01" id="gastosDeducibles" placeholder="Ej: 45000">
+                </div>
+
+                <div class="form-group">
+                    <label for="depreciacionAnual">Depreciación Fiscal Deducible del Período</label>
+                    <input type="number" step="0.01" id="depreciacionAnual" placeholder="Ej: 10000">
+                </div>
+
+                <div class="form-group">
+                    <label for="tasaIslr">Tasa Impositiva ISLR (en %, ej: 34 para 34% Tarifa 2)</label>
+                    <input type="number" step="0.01" id="tasaIslr" value="34" placeholder="Ej: 34">
+                </div>
+
+                <div class="button-actions">
+                    <button type="button" onclick="calcularISLR()">Calcular ISLR y FEDI</button>
+                    <button type="button" onclick="limpiarCamposGenerico('formISLR')" class="btn-clear">Limpiar Campos</button>
+                </div>
+            </div>
+
+            <!-- Formulario IVA -->
+            <div id="formIVA" class="form-container hidden">
+                <div class="form-group">
+                    <label for="ventasBase">Base Imponible de Ventas / Ingresos (Débito Fiscal)</label>
+                    <input type="number" step="0.01" id="ventasBase" placeholder="Ej: 50000">
+                </div>
+
+                <div class="form-group">
+                    <label for="comprasBase">Base Imponible de Compras y Servicios (Crédito Fiscal)</label>
+                    <input type="number" step="0.01" id="comprasBase" placeholder="Ej: 30000">
+                </div>
+
+                <div class="form-group">
+                    <label for="alicuotaIva">Alicuota de IVA Aplicable (%):</label>
+                    <select id="alicuotaIva">
+                        <option value="16" selected>16% (Alícuota General SENIAT)</option>
+                        <option value="8">8% (Alícuota Reducida)</option>
+                        <option value="31">31% (Alícuota General + Adicional Suntuario)</option>
+                    </select>
+                </div>
+
+                <div class="button-actions">
+                    <button type="button" onclick="calcularIVA()">Calcular Cuota de IVA</button>
+                    <button type="button" onclick="limpiarCamposGenerico('formIVA')" class="btn-clear">Limpiar Campos</button>
+                </div>
+            </div>
+
+            <!-- Formulario IGTF -->
+            <div id="formIGTF" class="form-container hidden">
+                <div class="form-group">
+                    <label for="montoOperacion">Monto Total de la Operación en Divisas / Criptoactivos</label>
+                    <input type="number" step="0.01" id="montoOperacion" placeholder="Ej: 500">
+                </div>
+
+                <div class="form-group">
+                    <label for="tasaIgtf">Alícuota IGTF (%):</label>
+                    <select id="tasaIgtf">
+                        <option value="3" selected>3% (Pagos en Divisas / Criptoactivos)</option>
+                        <option value="2">2% (Contribuyentes Especiales en Moneda Nacional)</option>
+                    </select>
+                </div>
+
+                <div class="button-actions">
+                    <button type="button" onclick="calcularIGTF()">Calcular IGTF Retenido</button>
+                    <button type="button" onclick="limpiarCamposGenerico('formIGTF')" class="btn-clear">Limpiar Campos</button>
+                </div>
+            </div>
+
+            <!-- Formulario Escudo Fiscal -->
+            <div id="formEscudo" class="form-container hidden">
+                <div class="form-group">
+                    <label for="montoDepreciacionEscudo">Monto Anual de Depreciación</label>
+                    <input type="number" step="0.01" id="montoDepreciacionEscudo" placeholder="Ej: 12000">
+                </div>
+
+                <div class="form-group">
+                    <label for="tasaIslrEscudo">Tasa Impositiva ISLR Corporativa (%):</label>
+                    <input type="number" step="0.01" id="tasaIslrEscudo" value="34" placeholder="Ej: 34">
+                </div>
+
+                <div class="button-actions">
+                    <button type="button" onclick="calcularEscudo()">Calcular Escudo Fiscal</button>
+                    <button type="button" onclick="limpiarCamposGenerico('formEscudo')" class="btn-clear">Limpiar Campos</button>
+                </div>
+            </div>
+
+            <div id="resultado"></div>
+            <a href="index.html"><button type="button" class="btn-nav">← Volver al Menú Principal</button></a>
+        </main>
+
+        <aside class="sidebar-panel">
+            <h2>📚 Teoría y Fórmulas (Venezuela)</h2>
+
+            <div class="sidebar-section">
+                <h3>Impuesto Sobre la Renta (ISLR)</h3>
+                <p>Grava los enriquecimientos anuales netos y disponibles obtenidos en Venezuela. La Tarifa 2 aplica a Sociedades Mercantiles / Personas Jurídicas.</p>
+                <div class="formula-box">Renta Neta = Ingresos - Gastos - Depreciación</div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>Flujo de Efectivo Después de Impuestos (FEDI)</h3>
+                <p>Mide la liquidez neta real considerando el impacto impositivo y reincorporando la depreciación (gasto no desembolsable).</p>
+                <div class="formula-box">FEDI = (Renta Neta × (1 - T)) + Depreciación</div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>Impuesto al Valor Agregado (IVA)</h3>
+                <p>Tributo indirecto que grava el consumo. Se calcula por la diferencia entre Débito Fiscal (ventas) y Crédito Fiscal (compras).</p>
+                <div class="formula-box">IVA Pagar = Débito Fiscal - Crédito Fiscal</div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>IGTF (Grandes Transacciones Financieras)</h3>
+                <p>Impuesto indirecto del 3% aplicado sobre pagos en divisas o moneda extranjera sin intermediación bancaria nacional.</p>
+                <div class="formula-box">IGTF = Monto Operación × 3%</div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>Escudo Fiscal (Tax Shield)</h3>
+                <p>Ahorro tributario generado por la deductibilidad fiscal del gasto de depreciación.</p>
+                <div class="formula-box">Escudo Fiscal = Depreciación × T</div>
+            </div>
+        </aside>
+    </div>
+
+    <footer>
+        <p>Calculadora Financiera &copy; 2026</p>
+    </footer>
+
+    <script src="../scripts/common.js"></script>
+    <script src="../scripts/tributos.js"></script>
+</body>
+</html>

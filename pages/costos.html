@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles/style.css"/>
+    <title>Calculadora Financiera - Estructura de Costos</title>
+</head>
+<body>
+    <header>
+        Estructura de Costos y Precios
+    </header>
+
+    <div class="page-container">
+        <main> 
+            <h1>Cálculo de Costos y Margen de Beneficio</h1>
+            <h3>Calcule Costo Total, Punto de Equilibrio, Ingreso/Utilidad Real y Formación de Precios.</h3>
+
+            <div class="form-group">
+                <label for="modeloCalculo">Seleccione el Modelo de Costos:</label>
+                <select id="modeloCalculo" onchange="cambiarModelo()">
+                    <option value="">-- Seleccione un modelo --</option>
+                    <option value="costo_total">Costo Total (CT = CF + v*Q)</option>
+                    <option value="punto_equilibrio">Análisis de Punto de Equilibrio (Qeq = CF / (P - v))</option>
+                    <option value="ingreso_utilidad">Ingresos y Margen de Beneficio Real (U = IT - CT)</option>
+                    <option value="formacion_precio">Formación de Precios (Margen Nominal)</option>
+                </select>
+            </div>
+
+            <div id="seccionVariable" class="form-group hidden">
+                <label for="variableObjetivo">¿Qué variable desea calcular (Despejar)?</label>
+                <select id="variableObjetivo" onchange="configurarFormulario()"></select>
+            </div>
+
+            <div id="formularioCampos" class="hidden form-container">
+                <div id="grupo_CT" class="form-group hidden">
+                    <label for="costoTotal">Costo Total (CT)</label>
+                    <input type="number" id="costoTotal" min="0" step="0.01" placeholder="Ej: 15000">
+                </div>
+                <div id="grupo_CF" class="form-group hidden">
+                    <label for="costoFijo">Costo Fijo (CF)</label>
+                    <input type="number" id="costoFijo" min="0" step="0.01" placeholder="Ej: 5000">
+                </div>
+                <div id="grupo_v" class="form-group hidden">
+                    <label for="costoVariableUnitario">Costo Variable Unitario (v)</label>
+                    <input type="number" id="costoVariableUnitario" min="0" step="0.01" placeholder="Ej: 10">
+                </div>
+                <div id="grupo_Q" class="form-group hidden">
+                    <label for="cantidad">Cantidad / Producción (Q)</label>
+                    <input type="number" id="cantidad" min="0" step="1" placeholder="Ej: 1000">
+                </div>
+                <div id="grupo_P" class="form-group hidden">
+                    <label for="precioUnitario">Precio Unitario de Venta (P)</label>
+                    <input type="number" id="precioUnitario" min="0" step="0.01" placeholder="Ej: 25">
+                </div>
+                
+                <div id="grupo_IT" class="form-group hidden">
+                    <label for="ingresoTotal">Ingreso Total (IT)</label>
+                    <input type="number" id="ingresoTotal" min="0" step="0.01" placeholder="Ej: 25000">
+                </div>
+                <div id="grupo_U" class="form-group hidden">
+                    <label for="utilidad">Beneficio Real / Utilidad (U)</label>
+                    <input type="number" id="utilidad" step="0.01" placeholder="Ej: 10000">
+                </div>
+                <div id="grupo_Cu" class="form-group hidden">
+                    <label for="costoUnitario">Costo Unitario Total (Cu)</label>
+                    <input type="number" id="costoUnitario" min="0" step="0.01" placeholder="Ej: 15">
+                </div>
+                <div id="grupo_margen" class="form-group hidden">
+                    <label for="margenGanancia">Margen de Beneficio Nominal (en %, ej: 30 para 30%)</label>
+                    <input type="number" id="margenGanancia" step="0.01" placeholder="Ej: 30">
+                </div>
+
+                <div class="button-actions">
+                    <button type="button" onclick="ejecutarCalculoCostos()">Ejecutar Cálculo</button>
+                    <button type="button" onclick="limpiarCamposGenerico('formularioCampos')" class="btn-clear">Limpiar Campos</button>
+                </div>
+            </div>
+
+            <div id="resultado"></div>
+            <a href="index.html"><button type="button" class="btn-nav">← Volver al Menú Principal</button></a>
+        </main>
+
+        <aside class="sidebar-panel">
+            <h2>📚 Teoría y Fórmulas</h2>
+
+            <div class="sidebar-section">
+                <h3>Costo Total (CT)</h3>
+                <p>Suma de costos fijos independientes del volumen y variables dependientes de Q.</p>
+                <div class="formula-box">CT = CF + (v × Q)</div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>Punto de Equilibrio (Q_eq)</h3>
+                <p>Nivel de volumen donde Ingresos Totales igualan a Costos Totales (Utilidad = 0).</p>
+                <div class="formula-box">Q_eq = CF / (P - v)</div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>Margen de Beneficio Real (U)</h3>
+                <p>Utilidad neta real obtenida de las ventas efectivas de la empresa.</p>
+                <div class="formula-box">U = IT - CT = Q·(P - v) - CF</div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>Formación de Precios</h3>
+                <p>Establece el precio agregando un margen deseado sobre el costo unitario.</p>
+                <div class="formula-box">P = Cu × (1 + Margen%)</div>
+            </div>
+        </aside>
+    </div>
+
+    <footer>
+        <p>Calculadora Financiera &copy; 2026</p>
+    </footer>
+
+    <script src="../scripts/common.js"></script>
+    <script src="../scripts/costos.js"></script>
+</body>
+</html>

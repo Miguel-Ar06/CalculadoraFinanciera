@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles/style.css"/>
+    <title>Calculadora Financiera - Factores de Interés Compuesto</title>
+</head>
+<body>
+    <header>
+        Factores de Interés Compuesto
+    </header>
+
+    <div class="page-container">
+        <main> 
+            <h1>Cálculo de Factores Financieros</h1>
+            <h3>Obtenga los factores de capitalización, descuento, anualidad y gradiente.</h3>
+
+            <div class="form-group">
+                <label for="tipoFactor">Seleccione el Factor a Calcular:</label>
+                <select id="tipoFactor" onchange="configurarFormulario()">
+                    <option value="fp">Factor F/P - Cantidad Compuesta Pago Único: (F/P, i%, n)</option>
+                    <option value="pf">Factor P/F - Valor Presente Pago Único: (P/F, i%, n)</option>
+                    <option value="fa">Factor F/A - Cantidad Compuesta Serie Uniforme: (F/A, i%, n)</option>
+                    <option value="af">Factor A/F - Fondo de Amortización: (A/F, i%, n)</option>
+                    <option value="pa">Factor P/A - Valor Presente Serie Uniforme: (P/A, i%, n)</option>
+                    <option value="ap">Factor A/P - Recuperación de Capital: (A/P, i%, n)</option>
+                    <option value="pg">Factor P/G - Valor Presente Gradiente Aritmético: (P/G, i%, n)</option>
+                    <option value="ag">Factor A/G - Serie Uniforme Gradiente Aritmético: (A/G, i%, n)</option>
+                </select>
+            </div>
+
+            <div id="formularioCampos" class="form-container">
+                <div class="form-group">
+                    <label for="tasaInteres">Tasa de Interés por período (i%)</label>
+                    <input type="number" step="0.01" id="tasaInteres" placeholder="Ej: 10 para 10%">
+                </div>
+
+                <div class="form-group">
+                    <label for="numeroPeriodos">Número de períodos (n)</label>
+                    <input type="number" step="1" id="numeroPeriodos" min="1" placeholder="Ej: 5">
+                </div>
+
+                <div class="form-group">
+                    <label id="lblMontoBase" for="montoBase">Monto Base de entrada (Opcional para obtener el total)</label>
+                    <input type="number" step="0.01" id="montoBase" placeholder="Ej: 1000">
+                </div>
+
+                <div class="button-actions">
+                    <button type="button" onclick="calcularFactor()">Calcular Factor</button>
+                    <button type="button" onclick="limpiarCamposGenerico('formularioCampos')" class="btn-clear">Limpiar Campos</button>
+                </div>
+            </div>
+
+            <div id="resultado"></div>
+            <a href="index.html"><button type="button" class="btn-nav">← Volver al Menú Principal</button></a>
+        </main>
+
+        <aside class="sidebar-panel">
+            <h2>📚 Teoría y Fórmulas</h2>
+
+            <div class="sidebar-section">
+                <h3>Factor (F/P, i%, n)</h3>
+                <p>Encuentra el Valor Futuro F a partir de un Valor Presente P.</p>
+                <div class="formula-box">F = P × (1 + i)ⁿ</div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>Factor (P/F, i%, n)</h3>
+                <p>Encuentra el Valor Presente P descontando un Valor Futuro F.</p>
+                <div class="formula-box">P = F × (1 + i)⁻ⁿ</div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>Factor (F/A, i%, n)</h3>
+                <p>Acumula una serie de cuotas iguales A al final del período n.</p>
+                <div class="formula-box">F = A × [((1 + i)ⁿ - 1) / i]</div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>Factor (A/F, i%, n)</h3>
+                <p>Calcula la cuota uniforme A requerida para acumular un fondo F.</p>
+                <div class="formula-box">A = F × [i / ((1 + i)ⁿ - 1)]</div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>Factor (P/A, i%, n)</h3>
+                <p>Valor presente equivalente a una serie de cuotas constantes A.</p>
+                <div class="formula-box">P = A × [((1 + i)ⁿ - 1) / (i(1 + i)ⁿ)]</div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>Factor (A/P, i%, n)</h3>
+                <p>Calcula el pago periódico constante A para amortizar una deuda P.</p>
+                <div class="formula-box">A = P × [(i(1 + i)ⁿ) / ((1 + i)ⁿ - 1)]</div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>Factor (P/G, i%, n)</h3>
+                <p>Valor presente de una serie con incremento constante G por período.</p>
+                <div class="formula-box">P = G × [((1+i)ⁿ - 1 - n·i) / (i²(1+i)ⁿ)]</div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>Factor (A/G, i%, n)</h3>
+                <p>Serie anual uniforme equivalente a un gradiente aritmético G.</p>
+                <div class="formula-box">A = G × [(1/i) - (n / ((1+i)ⁿ - 1))]</div>
+            </div>
+        </aside>
+    </div>
+
+    <footer>
+        <p>Calculadora Financiera &copy; 2026</p>
+    </footer>
+
+    <script src="../scripts/common.js"></script>
+    <script src="../scripts/factores.js"></script>
+</body>
+</html>
