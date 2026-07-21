@@ -107,7 +107,7 @@ function calcularCapital() {
 
             if (tipo === "co") {
                 if (isNaN(roa) || isNaN(roe)) throw "Faltan datos obligatorios.";
-                output = roa - roe;
+                output = roe - roa;
                 color = output < 0 ? "val-negativo" : "val-positivo";
                 texto = `Costo de Oportunidad: <span class="${color}">${monedaActual}${output.toFixed(2)}</span>`;
             } else if (tipo === "co_roa") {
