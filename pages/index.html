@@ -15,10 +15,9 @@
         <h1>Calculadora Financiera</h1>
         <h3>Seleccione el módulo de cálculo que desea consultar:</h3>
 
-        <!-- Selector de Divisa Global (USD / EUR) y Tasa de Cambio en Bolívares -->
         <div class="form-group" style="background: var(--azul-tenue); padding: 16px; border-radius: 12px; border: 1px solid var(--azul-borde); margin-bottom: 25px;">
             <label style="color: var(--azul-primario); font-size: 15px; font-weight: 700; text-align: center; display: block; margin-bottom: 12px;">
-                ⚙️ Configuración Global de Moneda y Tasa de Cambio
+                Configuración Global de Moneda y Tasa de Cambio
             </label>
 
             <div class="radio-group" style="margin-bottom: 12px; background: transparent; padding: 0; border: none;">
@@ -32,14 +31,13 @@
 
             <div style="display: flex; align-items: center; gap: 10px; justify-content: center; flex-wrap: wrap;">
                 <label for="tasaCambioBs" style="margin-bottom: 0; font-size: 13px;">Tasa de Cambio (Bs. por <span id="labelDivisaSigla">USD</span>):</label>
-                <input type="number" id="tasaCambioBs" step="0.01" value="40.00" style="max-width: 140px; padding: 8px 12px; font-weight: bold; text-align: center;" oninput="guardarConfiguracionMoneda()">
+                <input type="number" id="tasaCambioBs" min="0" step="0.01" value="40.00" style="max-width: 140px; padding: 8px 12px; font-weight: bold; text-align: center;" oninput="guardarConfiguracionMoneda()" onkeydown="if(event.key==='-' || event.key==='e') event.preventDefault()">
             </div>
             <p style="font-size: 11.5px; color: var(--texto-secundario); text-align: center; margin: 8px 0 0 0;">
                 * Los resultados en todas las secciones se mostrarán obligatoriamente en <strong>Bolívares (Bs.)</strong> por defecto y en la divisa seleccionada arriba.
             </p>
         </div>
         
-        <!-- Botones de Navegación del Menú Principal -->
         <a href="interes.html"><button type="button">1. Cálculo de Interés (Simple y Compuesto)</button></a>
         <a href="factores.html"><button type="button">2. Factores de Interés Compuesto (F/P, P/F, F/A, A/F, P/A, A/P, P/G, A/G)</button></a>
         <a href="anualidades.html"><button type="button">3. Cálculo de Anualidades</button></a>
@@ -63,7 +61,7 @@
             const tasaBs = parseFloat(document.getElementById('tasaCambioBs').value) || (divisa === '€' ? 43.50 : 40.00);
             
             localStorage.setItem('monedaGlobal', divisa);
-            localStorage.setItem('moneda', divisa); // compatibilidad
+            localStorage.setItem('moneda', divisa);
             localStorage.setItem('tasaBs', tasaBs);
 
             document.getElementById('labelDivisaSigla').textContent = divisa === '€' ? 'EUR (€)' : 'USD ($)';
